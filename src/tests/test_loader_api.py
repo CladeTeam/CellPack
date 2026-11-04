@@ -345,6 +345,7 @@ def test_online_plans_over_computed_sequences(tmp_path):
 
 
 def test_page_reference_and_source_regions(tmp_path):
+    import mmap
     import os
 
     x, _, a, _ = matrices(tmp_path)
@@ -367,7 +368,12 @@ def test_page_reference_and_source_regions(tmp_path):
     assert fd == page_fd and page_offset % 4096 == 0 and pages >= 1
     from pycellpack.cellpack import scans
 
-    assert scans.record_nnz(os.pread(fd, length, offset)) == np.count_nonzero(x[-1])
+    # The source descriptor may use O_DIRECT, which requires aligned buffers and offsets.
+    with mmap.mmap(-1, pages * source.page_size) as buffer:
+        size = os.preadv(fd, [buffer], page_offset)
+        start = offset - page_offset
+        assert start + length <= size
+        assert scans.record_nnz(buffer[start:start + length]) == np.count_nonzero(x[-1])
 
 
 def test_execution_config_conflicts(tmp_path):

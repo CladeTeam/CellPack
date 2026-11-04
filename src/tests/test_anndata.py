@@ -252,9 +252,9 @@ def test_store_slots_on_existing_anndata_and_plain_output(tmp_path):
 @pytest.mark.parametrize("backend", ["pread", "uring"])
 def test_embedded_matrix_direct_reads_and_loader(tmp_path, backend):
     a, x = example(False)
-    scratch = tempfile.TemporaryDirectory(
-        prefix="pycellpack-direct-", dir=Path(__file__).resolve().parents[2] / "tmp"
-    )
+    scratch_parent = Path(__file__).resolve().parents[2] / "tmp"
+    scratch_parent.mkdir(exist_ok=True)
+    scratch = tempfile.TemporaryDirectory(prefix="pycellpack-direct-", dir=scratch_parent)
     path = Path(scratch.name) / "embedded.h5cp"
     io.write_h5cp(path, a, encode=True, chunk_rows=2)
     source = io.open_matrix(path)
