@@ -160,8 +160,8 @@ function draw(ctx, { p, t, box, c, wide }) {
       // The whole .cpk — stream and chunk — is outlined and drops into X.
       const u = ease.inOut(seg(swap, 0, 0.4));
       const pts = [
-        [box.x - 8, sy - 32],
-        [box.x + box.w + 8, sy - 32],
+        [box.x - 8, sy - 16],
+        [box.x + box.w + 8, sy - 16],
         [box.x + box.w + 8, cy + chunkH + 4],
         [cx - 56, cy + chunkH + 4],
         [cx - 56, sy + sh + 12],
