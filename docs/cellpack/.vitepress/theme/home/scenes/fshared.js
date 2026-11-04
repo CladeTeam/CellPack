@@ -164,12 +164,13 @@ function draw(ctx, env) {
     });
     if (localFocus > 0) {
       const endX = entryX(rank) + entryW / 2;
-      const startY = fy + fh + 2;
+      const startY = recY(ar.row) + rh + 2;
       const endY = localY - 3;
+      const bend = (endY - startY) * 0.45;
       ctx.save();
       ctx.beginPath();
       ctx.moveTo(ax, startY);
-      ctx.bezierCurveTo(ax, startY + 8, endX, endY - 8, endX, endY);
+      ctx.bezierCurveTo(ax, startY + bend, endX, endY - bend, endX, endY);
       ctx.strokeStyle = alpha(c.accent, 0.75 * localFocus * act1);
       ctx.lineWidth = 1.2;
       ctx.setLineDash([3, 4]);
