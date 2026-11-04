@@ -345,7 +345,7 @@ def loading(data, mode, c):
     bottom = top + pitch * len(rows)
     fig = Figure(
         c,
-        bottom + 66,
+        bottom + 92,
         "LOADING · RANDOM ORDER",
         "1.165M cells/s from one SSD",
         "Shuffled cells per second, read from one NVMe SSD",
@@ -368,9 +368,10 @@ def loading(data, mode, c):
         cy = top + pitch * i + pitch / 2
         focus = row["method"] == "CellPack"
         w = max(scale(row["cells_per_s"]) - x0, 2)
-        fig.text(x0 - 14, cy + 5, row["method"], 14, c["accent"] if focus else c["text2"], 700 if focus else 500, "end")
+        fig.text(x0 - 14, cy + 5, row["method"] + ("*" if row.get("native_sampling") else ""), 14, c["accent"] if focus else c["text2"], 700 if focus else 500, "end")
         fig.rect(x0, cy - bar / 2, w, bar, c["accent"] if focus else mix(c["bg"], c["text3"], 0.5), rx=min(3, w / 2))
         fig.text(x0 + w + 10, cy + 4.5, f"{row['cells_per_s']:,}", 13, c["accent"] if focus else c["text2"], 600 if focus else 400, family="mono", halo=True)
+    fig.notes(["* block sampling"])
     fig.save("performance-loading", mode)
 
 
