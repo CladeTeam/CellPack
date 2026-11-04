@@ -71,15 +71,17 @@ function setup({ box, c, dpr }) {
 }
 
 // Arrays wrap two chunks per line so chunk boundaries line up with lines.
-function arrays(g, s1) {
+function arrays(g, s1, chunk) {
   const perRow = PER_CHUNK * 2;
   const rows = Math.ceil(NNZ / perRow);
   const sq = Math.min(s1 * 1.2, (g.w - 90) / perRow);
-  const block = rows * (sq + 2 + 9);
+  // Chunk labels occupy their own band below each row of blocks.
+  const rowGap = 2 + 24 * chunk;
+  const block = rows * (sq + Math.max(11, rowGap));
   const x = g.x + (g.w - 80 - perRow * sq) / 2;
   const indptr = g.y + g.h * 0.12;
   const indices = indptr + Math.max(70, g.h * 0.14);
-  return { perRow, rows, sq, x, indptr, indices, values: indices + block + Math.max(56, g.h * 0.1) };
+  return { perRow, rows, sq, rowGap, x, indptr, indices, values: indices + block + Math.max(56, g.h * 0.1) };
 }
 
 // A label pinned next to what it describes.
@@ -189,13 +191,13 @@ function draw(ctx, { p, box, c, state }) {
 
   // Packed rows concatenate into the CSR arrays: squares stay squares.
   if (concat > 0) {
-    const A = arrays(g, s1);
+    const A = arrays(g, s1, chunk);
     const gapC = 14 * chunk;
     const pos = (k, top) => {
       const row = Math.floor(k / A.perRow);
       const col = k % A.perRow;
       const half = Math.floor(col / PER_CHUNK);
-      return [A.x + col * A.sq + half * gapC, top + row * (A.sq + 2 + gapC * 0.6)];
+      return [A.x + col * A.sq + half * gapC, top + row * (A.sq + A.rowGap)];
     };
     const size = (ch) => Math.min(PER_CHUNK, NNZ - ch * PER_CHUNK);
     // Before compression: each chunk where its elements sit. After: a block
@@ -249,7 +251,10 @@ function draw(ctx, { p, box, c, state }) {
             ctx.globalAlpha = 1;
           }
           strokeRound(ctx, b.x - 3, b.y - 3, b.w + 6, b.h + 6, 4, alpha(hit ? c.danger : c.text3, chunk * (hit ? 1 : 0.6)), hit ? 2 : 1);
-          if (b.w > 34 || repack > 0.5) text(ctx, repack > 0.5 ? `c${ch}` : `chunk ${ch}`, b.x + b.w / 2, b.y + b.h + 14, { size: 10, family: "mono", color: hit ? c.danger : c.text3, align: "center", a: chunk });
+          const labelOpacity = repack > 0
+            ? seg(repack, 0.95, 1)
+            : seg(chunk, 0.8, 1) * (1 - seg(squeeze, 0.65, 1));
+          if (b.w > 34 || repack > 0.95) text(ctx, repack > 0 ? `c${ch}` : `chunk ${ch}`, b.x + b.w / 2, b.y + b.h + 14, { size: 10, family: "mono", color: hit ? c.danger : c.text3, align: "center", a: labelOpacity });
         }
       // A read decompresses every touched chunk in full, then keeps a few values.
       if (pick > 0) {
