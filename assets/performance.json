@@ -1,12 +1,7 @@
 {
-  "description": "Frozen experimental results, not measurements of the current implementation. Newly rendered for README; no report figures are reused.",
+  "description": "Frozen technical-report and lab-documentation results, not measurements of the current implementation. All README figures are newly drawn; no report or website-animation figures are reused.",
   "regenerate": "uv run scripts/plot_readme.py",
   "sources": {
-    "compression_comparison_pooled.csv": {
-      "repository_path": "docs/cellpack/public/research/home/compression_comparison_pooled.csv",
-      "source": "CellPack-lab/technical-report/results/compression_comparison_pooled.csv",
-      "sha256": "13dc8c0bf3b351890679db525b56764fdc53466e81a15612f7ccc93aba1d42cd"
-    },
     "loader_methods.csv": {
       "repository_path": "docs/cellpack/public/research/home/loader_methods.csv",
       "source": "CellPack-lab/technical-report/results/loader_methods.csv",
@@ -16,6 +11,28 @@
       "repository_path": "docs/cellpack/public/research/home/cellpack_paper_values.json",
       "source": "CellPack-lab/technical-report/results/cellpack_paper_values.json",
       "sha256": "285e11de6b4c83928a7ebf6e8d83d40d2405af9b67106115582da13adba0b93d"
+    },
+    "billion_cell_online.csv": {
+      "repository_path": "docs/cellpack/public/research/home/billion_cell_online.csv",
+      "source": "CellPack-lab/technical-report/results/billion_cell_online.csv",
+      "sha256": "f921489c0572f0469f7c85fa02f0bb2fbe6ec641395241f5c963f8ed5f134bb9"
+    },
+    "billion_cell_online.sources.json": {
+      "repository_path": "assets/data/billion-cell-receipt.json",
+      "source": "CellPack-lab/technical-report/results/billion_cell_online.sources.json",
+      "sha256": "78e87662d1af10f7908081672489eda280c4d045c72574e59c44e685b10c9813",
+      "upstream_sha256": "aa0df7c55f456713a09846246e46e70e6a275d34832250c3ad4bc33d782be396",
+      "transformation": "Only the private absolute run path is shortened to its basename in the documentation snapshot; all measured fields are unchanged."
+    },
+    "corpus-storage-bytes.json": {
+      "repository_path": "assets/data/corpus-storage-bytes.json",
+      "source": "CellPack-lab/docs/data/cellxgene-storage-bytes.json",
+      "sha256": "301ccb4c8f2552b8776a802604dc5c4d56c775e5e4d222e649015a0a8d6e9b4a"
+    },
+    "compression_granularity.csv": {
+      "repository_path": "docs/cellpack/public/research/home/compression_granularity.csv",
+      "source": "CellPack-lab/technical-report/results/compression_granularity.csv",
+      "sha256": "9ca30d6bddfbe5368c67f802eaf0da4e67a6e119c84a4ca5b18b2419d6844532"
     }
   },
   "report": {
@@ -25,52 +42,9 @@
     "compiled": "2026-10-31",
     "sha256": "e6a3899adf93c8553f7e114a4ce208d2345ad0a9a494f9d5d4eb99dcb40f24f7"
   },
-  "compression": {
-    "protocol": "Technical report section 5.3, Table 3. Arithmetic mean of compression ratios with equal weight per raw or normalized matrix block; not total bytes divided by total compressed bytes. CellPack: 432 raw + 302 normalized blocks; general codecs: 428 raw + 296 normalized blocks, different seeded prefixes. Selected configurations from the published summary, not paired-input comparisons. CellPack uses 4096-cell chunks. No decode-speed claim.",
-    "selection": "CellPack plus LZ4, default and maximum-level Zstd, PCodec and XZ to cover fast, default and high-compression alternatives.",
-    "unit": "uncompressed bytes / compressed bytes",
-    "rows": [
-      {
-        "method": "LZ4",
-        "config": "lz4/default@imagecodecs",
-        "blocks": 724,
-        "ratio": 1.6930779183871798
-      },
-      {
-        "method": "Zstd (3, default)",
-        "config": "zstd/level-3@numcodecs",
-        "blocks": 724,
-        "ratio": 3.000558161624884
-      },
-      {
-        "method": "Zstd (22)",
-        "config": "zstd/level-22@numcodecs",
-        "blocks": 724,
-        "ratio": 4.476722029175023
-      },
-      {
-        "method": "PCodec (12)",
-        "config": "pcodec/level-12@numcodecs",
-        "blocks": 724,
-        "ratio": 4.824105575123087
-      },
-      {
-        "method": "XZ (9)",
-        "config": "xz/preset-9@numcodecs",
-        "blocks": 724,
-        "ratio": 4.884794353970329
-      },
-      {
-        "method": "CellPack",
-        "config": "cellpack/chunk-4096",
-        "blocks": 734,
-        "ratio": 5.893219444577845
-      }
-    ]
-  },
   "loading": {
     "protocol": "Technical report sections 5.1-5.2, Figure 5. One NVMe SSD, 16 workers, global random order. Baselines: best variant per method at 20 GB cache, means over three seeds, 60 s post-warm-up windows, sample output. CellPack: 0 data cache, direct I/O, report-selected value for a single 5 s check after a warm-up epoch, no variance estimate; 9967232 cells from 430 datasets, fixed 2048-gene float32 output (8192 bytes/cell). These are different output paths and timing protocols, not an identical-output speedup comparison. CellPack paper values replace interference-affected exports; see the note in cellpack_paper_values.json.",
-    "selection": "All global random-order baseline methods from loader_methods.csv. Excludes starred methods with native sampling; excludes RAID-0 and 32-worker configurations.",
+    "selection": "Every method in loader_methods.csv on one NVMe SSD. Methods marked * in the source use their native sampling order.",
     "unit": "cells/s",
     "rows": [
       {
@@ -135,6 +109,151 @@
         "cache_bytes": 0,
         "source": "cellpack_paper_values.json:fig5.nvme_16",
         "value_kind": "author-selected report value, not an unmodified measured export"
+      },
+      {
+        "method": "TileDB",
+        "cells_per_s": 4795,
+        "variant": "tiledbsoma (sparse X)",
+        "cache_bytes": 20000000000,
+        "native_sampling": true,
+        "source": "loader_methods.csv:nvme"
+      },
+      {
+        "method": "annbatch",
+        "cells_per_s": 68190,
+        "variant": "annbatch",
+        "cache_bytes": 20000000000,
+        "native_sampling": true,
+        "source": "loader_methods.csv:nvme"
+      },
+      {
+        "method": "cellarium",
+        "cells_per_s": 50073,
+        "variant": "cellarium",
+        "cache_bytes": 20000000000,
+        "native_sampling": true,
+        "source": "loader_methods.csv:nvme"
+      },
+      {
+        "method": "scDataset",
+        "cells_per_s": 38859,
+        "variant": "scdataset (sparse transform)",
+        "cache_bytes": 20000000000,
+        "native_sampling": true,
+        "source": "loader_methods.csv:nvme"
+      }
+    ]
+  },
+  "storage_scale": {
+    "label": "100M-cell corpus",
+    "datasets": 622,
+    "cells": 123868479,
+    "h5cp_bytes": 611480120038,
+    "h5ad_scipy_bytes": 4867353502533,
+    "h5ad_compact_indices_bytes": 2761432559159,
+    "counts_stream_bytes": 227699631584,
+    "nonmatrix_bytes": 58208711537,
+    "unit": "decimal bytes",
+    "value_kind": "measured full H5CP files and embedded CellPack counts matrices; analytically accounted uncompressed H5AD bytes from exact matrix shapes, dtypes and nnz",
+    "protocol": "Same annotated corpus: 622 datasets, 123868479 cells, 2654 matrices. H5CP is the sum of actual full-file sizes. Uncompressed H5AD = matrix data + CSR indices + CSR indptr + the same nonmatrix bytes. SciPy defaults select int32/int64 jointly for indices and indptr; matrices with nnz above 2^31-1 require int64. Compact H5AD uses uint16/uint32 column indices while retaining SciPy-selected indptr. Values retain source dtypes. H5AD accounting excludes matrix-dataset HDF5 object headers/chunk indices; these H5AD files were not written in full. Counts matrix size is part of H5CP total and does not include other matrices or annotations. All GB/TB units are decimal.",
+    "source_document": {
+      "source": "CellPack-lab/docs/cellxgene-format.md",
+      "sha256": "e94528036c1114bae4a389958c2ef347991924b7acff7da09ab4fcaa1df0c7a4"
+    }
+  },
+  "billion_cell": {
+    "protocol": "Technical report evaluation: Scaling to one billion cells. Replicated CELLxGENE corpus with independently permuted gene mappings, exactly 1B cells (1.85 TB), five fresh global permutations, two NVMe SSDs in RAID-0, 8 planner cores + 48 loader cores, 1 TB compressed-page cache retained across epochs, 1B-access planning horizon. Fixed 2048-gene float32 output; every delivered cell decoded (zero decoded-row hits). Loader-start epoch timings include startup, exclude metadata opening. Steady throughput is 4B / total duration of epochs 2-5. Measured time-series rates are shown as non-overlapping five-second bins, weighted by cumulative cell deltas and elapsed time; no smoothing across epochs.",
+    "corpus_cells": 1000000000,
+    "corpus_bytes": 1850000000000,
+    "cache_bytes": 1000000000000,
+    "planner_cores": 8,
+    "loader_cores": 48,
+    "output_genes": 2048,
+    "report_values": {
+      "cells_per_second_including_startup": 3240000,
+      "loader_minutes": 25.7,
+      "cells_per_second_including_metadata": 2800000,
+      "total_minutes_including_metadata": 29.8,
+      "steady_cells_per_second": 3670000,
+      "peak_rss_bytes": 1290000000000
+    }
+  },
+  "primary_storage_comparison": "expression_storage",
+  "expression_storage": {
+    "label": "Expression matrices in a 100M-cell corpus",
+    "source": "corpus-storage-bytes.json",
+    "cells": 123868479,
+    "unit": "decimal bytes",
+    "protocol": "Compare the same expression-matrix slot across datasets. AnnData uncompressed CSR byte accounting includes data, column indices and row pointers, with SciPy-selected int32/int64 index precision. Compact H5AD uses uint16/uint32 column indices and the same row pointers. CellPack matrix sizes are measured embedded matrix bytes including matrix metadata and page padding. Preserve source value dtypes. Exclude annotations, embeddings, other slots and HDF5 container overhead from both sides. Ratios divide corpus byte totals for each slot, rather than averaging per-dataset ratios. Whole-file sizes in storage_scale are supplementary context, not the primary expression-matrix comparison.",
+    "rows": [
+      {
+        "slot": "X",
+        "label": "Raw counts",
+        "datasets": 622,
+        "value_dtypes": {
+          "uint16": 596,
+          "uint32": 26
+        },
+        "h5ad_scipy_bytes": 2217864164262,
+        "h5ad_compact_indices_bytes": 1135090002520,
+        "cellpack_matrix_bytes": 227699631584,
+        "h5ad_scipy_to_cellpack_ratio": 9.74030633617347,
+        "h5ad_compact_indices_to_cellpack_ratio": 4.985032231381794
+      },
+      {
+        "slot": "layers/normed",
+        "label": "Normalized expression",
+        "datasets": 455,
+        "value_dtypes": {
+          "float32": 455
+        },
+        "h5ad_scipy_bytes": 2383775546672,
+        "h5ad_compact_indices_bytes": 1418817536880,
+        "cellpack_matrix_bytes": 226230971267,
+        "h5ad_scipy_to_cellpack_ratio": 10.536910721470779,
+        "h5ad_compact_indices_to_cellpack_ratio": 6.271544205172057
+      }
+    ]
+  },
+  "codecs": {
+    "protocol": "Technical report Figure 2b: mean compression ratio over 734 raw and normalized CELLxGENE matrices, with each codec applied to independent units of 1 or 2,048 consecutive cells. CellPack keeps per-cell access (one cell per unit) in its 4,096-cell chunk layout.",
+    "unit": "uncompressed bytes / compressed bytes",
+    "source": "compression_granularity.csv (matrix=pooled)",
+    "rows": [
+      {
+        "method": "CellPack",
+        "codec": "cellpack",
+        "per_cell": 5.8932
+      },
+      {
+        "method": "PCodec (12)",
+        "codec": "pcodec12",
+        "per_cell": 4.8759,
+        "block_2048": 4.8054
+      },
+      {
+        "method": "XZ (9)",
+        "codec": "xz9",
+        "per_cell": 2.1057,
+        "block_2048": 4.7918
+      },
+      {
+        "method": "Zstd (22)",
+        "codec": "zstd22",
+        "per_cell": 1.9469,
+        "block_2048": 4.3366
+      },
+      {
+        "method": "Zstd (3)",
+        "codec": "zstd3",
+        "per_cell": 1.8519,
+        "block_2048": 3.0907
+      },
+      {
+        "method": "LZ4",
+        "codec": "lz4",
+        "per_cell": 1.4249,
+        "block_2048": 1.6896
       }
     ]
   }
