@@ -13,6 +13,7 @@ concurrency:
 env:
   CARGO_BUILD_JOBS: '2'
   CARGO_TERM_COLOR: always
+  MATURIN_PEP517_ARGS: '--profile dev --locked'
   RUST_TOOLCHAIN: '1.96.1'
   OMP_NUM_THREADS: '1'
   OPENBLAS_NUM_THREADS: '1'
