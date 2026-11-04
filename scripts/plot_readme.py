@@ -341,15 +341,14 @@ def verify(data):
 
 def loading(data, mode, c):
     rows = sorted(data["loading"]["rows"], key=lambda r: r["cells_per_s"], reverse=True)
-    best = rows[1]["cells_per_s"]
     top, pitch, bar = 172, 32, 16
     bottom = top + pitch * len(rows)
     fig = Figure(
         c,
-        bottom + 92,
-        "LOADING · GLOBAL RANDOM ORDER",
+        bottom + 66,
+        "LOADING · RANDOM ORDER",
         "1.165M cells/s from one SSD",
-        "One NVMe SSD · 16 workers · no data cache for CellPack · cells per second",
+        "Shuffled cells per second, read from one NVMe SSD",
         data["loading"]["protocol"],
         "accent",
     )
@@ -369,30 +368,9 @@ def loading(data, mode, c):
         cy = top + pitch * i + pitch / 2
         focus = row["method"] == "CellPack"
         w = max(scale(row["cells_per_s"]) - x0, 2)
-        name = row["method"] + ("*" if row.get("native_sampling") else "")
-        fig.text(x0 - 14, cy + 5, name, 14, c["accent"] if focus else c["text2"], 700 if focus else 500, "end")
+        fig.text(x0 - 14, cy + 5, row["method"], 14, c["accent"] if focus else c["text2"], 700 if focus else 500, "end")
         fig.rect(x0, cy - bar / 2, w, bar, c["accent"] if focus else mix(c["bg"], c["text3"], 0.5), rx=min(3, w / 2))
         fig.text(x0 + w + 10, cy + 4.5, f"{row['cells_per_s']:,}", 13, c["accent"] if focus else c["text2"], 600 if focus else 400, family="mono", halo=True)
-    cy = top + pitch / 2
-    x = scale(best)
-    fig.path(
-        f"M {num(x)} {num(cy + pitch - bar / 2 - 4)} V {num(cy + bar / 2 + 4)} H {num(scale(rows[0]['cells_per_s']))}",
-        stroke=c["accent"],
-        width=1.2,
-        dash="3 3",
-    )
-    fig.text(
-        (x + scale(rows[0]["cells_per_s"])) / 2,
-        cy + pitch + 5,
-        f"{rows[0]['cells_per_s'] / best:.1f}× the next-fastest loader",
-        16,
-        c["accent"],
-        600,
-        "middle",
-        family="head",
-        halo=True,
-    )
-    fig.notes(["* native sampling order"])
     fig.save("performance-loading", mode)
 
 
@@ -400,8 +378,8 @@ def storage(data, mode, c):
     s = data["storage_scale"]
     x = next(r for r in data["expression_storage"]["rows"] if r["slot"] == "X")
     groups = [
-        ("Whole files", "matrices + annotations", s["h5ad_scipy_bytes"], s["h5cp_bytes"]),
-        ("Expression matrix X", "raw counts", x["h5ad_scipy_bytes"], x["cellpack_matrix_bytes"]),
+        ("Whole files", "all matrices and annotations", s["h5ad_scipy_bytes"], s["h5cp_bytes"]),
+        ("Expression matrix X", "", x["h5ad_scipy_bytes"], x["cellpack_matrix_bytes"]),
     ]
     top, bar, step, gap = 184, 26, 34, 44
     span = 2 * step
@@ -409,9 +387,9 @@ def storage(data, mode, c):
     fig = Figure(
         c,
         bottom + 66,
-        "STORAGE · VERSUS ANNDATA",
+        "STORAGE",
         f"124M cells in {s['h5cp_bytes'] / 1e9:.0f} GB",
-        "A 124M-cell CELLxGENE corpus stored as AnnData H5AD and as CellPack H5CP · lower is better",
+        "The same 124M-cell corpus as AnnData H5AD and as CellPack H5CP",
         s["protocol"],
     )
     h5ad, h5cp = mix(c["bg"], c["text3"], 0.5), c["teal"]
@@ -424,8 +402,9 @@ def storage(data, mode, c):
     fig.xgrid(scale, [(t * 1e12, f"{t} TB" if t else "0") for t in range(6)], top - 8, bottom)
     for g, (name, detail, before, after) in enumerate(groups):
         gy = top + g * (span + gap)
-        fig.text(x0 - 16, gy + span / 2 - 3, name, 15, c["text"], 600, "end")
-        fig.text(x0 - 16, gy + span / 2 + 16, detail, 12.5, c["text3"], anchor="end")
+        fig.text(x0 - 16, gy + span / 2 + (-3 if detail else 5), name, 15, c["text"], 600, "end")
+        if detail:
+            fig.text(x0 - 16, gy + span / 2 + 16, detail, 12.5, c["text3"], anchor="end")
         for i, (size, color) in enumerate([(before, h5ad), (after, h5cp)]):
             y = gy + i * step + (step - bar) / 2
             fig.rect(x0, y, scale(size) - x0, bar, color, rx=3)
@@ -445,16 +424,16 @@ def compression(data, mode, c):
     fig = Figure(
         c,
         bottom + 66,
-        "COMPRESSION · SINGLE-CELL MATRICES",
+        "COMPRESSION",
         "Best compression, one cell at a time",
-        "Compression ratio on 734 CELLxGENE matrices · higher is better",
+        "Compression ratio on single-cell expression matrices · higher is better",
         data["codecs"]["protocol"],
     )
     block, cell = mix(c["bg"], c["text3"], 0.32), mix(c["bg"], c["text3"], 0.75)
     fig.legend(
         LEFT,
         152,
-        [(c["teal"], "CellPack · every cell independently decodable"), (cell, "codec · one cell per unit"), (block, "codec · 2,048-cell blocks")],
+        [(c["teal"], "CellPack · one cell at a time"), (cell, "codec · one cell at a time"), (block, "codec · 2,048 cells per block")],
     )
     x0, x1, vmax = 200, 1000, 6.5
 
@@ -494,9 +473,9 @@ def billion(data, mode, c):
     fig = Figure(
         c,
         600,
-        "SCALE · ONE BILLION CELLS",
+        "SCALE",
         f"5B cells in {end / 60:.1f} minutes",
-        "1B-cell corpus (1.85 TB) · five fresh global shuffles · two NVMe SSDs · 1 TB compressed-page cache",
+        "Five epochs over a 1B-cell corpus, freshly shuffled every epoch",
         data["billion_cell"]["protocol"],
         "accent",
     )
@@ -504,9 +483,9 @@ def billion(data, mode, c):
     card = (RIGHT - LEFT - 2 * gap) / 3
     for k, (label, value, tone) in enumerate(
         [
-            ("OVERALL · INCLUDING STARTUP", f"{mean / 1e6:.2f}M cells/s", c["accent"]),
-            ("STEADY STATE · EPOCHS 2–5", f"{steady / 1e6:.2f}M cells/s", c["teal"]),
-            ("ELAPSED · 5 EPOCHS", f"{end / 60:.1f} min", c["text2"]),
+            ("AVERAGE", f"{mean / 1e6:.2f}M cells/s", c["accent"]),
+            ("STEADY STATE", f"{steady / 1e6:.2f}M cells/s", c["teal"]),
+            ("TOTAL TIME · 5B CELLS", f"{end / 60:.1f} min", c["text2"]),
         ]
     ):
         x = LEFT + k * (card + gap)
@@ -529,7 +508,7 @@ def billion(data, mode, c):
     fig.text(px0, top - 30, "cells / second", 11, c["text3"], family="mono")
     for minute in range(0, int(end // 60) + 1, 5):
         fig.text(sx(minute * 60), bottom + 20, str(minute), 11.5, c["text3"], anchor="middle", family="mono")
-    fig.text(px1, bottom + 40, "minutes since loader start", 11, c["text3"], anchor="end", family="mono")
+    fig.text(px1, bottom + 40, "minutes", 11, c["text3"], anchor="end", family="mono")
 
     series = list(
         csv.DictReader(
