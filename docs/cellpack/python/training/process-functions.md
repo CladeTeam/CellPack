@@ -6,11 +6,14 @@ directory and needs no model checkpoint or training data.
 
 ## Choose a run
 
-From the repository root in a prepared environment:
+In your Python project, install PyCellPack from PyPI and save the
+[downloadable program](/downloads/examples/processfn-example.py) as
+`processfn-example.py`. With a C++17 compiler available, run:
 
 ```sh
-uv run example/processfn-example.py
-uv run example/processfn-example.py --device cuda
+uv add pycellpack
+uv run processfn-example.py
+uv run processfn-example.py --device cuda
 ```
 
 | Mode | Requirements | What you inspect |

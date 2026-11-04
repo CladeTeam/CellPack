@@ -14,11 +14,12 @@ provide a multi-host transport.
 
 ## Run a two-rank CPU example
 
-Install PyTorch separately. Save the program below as `shared-loader.py` in a
-writable directory, then launch **two ranks on the same host**:
+Install [PyCellPack from PyPI](installation.md) and PyTorch in the same project.
+Save the program below as `shared-loader.py` in a writable directory, then launch
+**two ranks on the same host**:
 
 ```sh
-torchrun --standalone --nproc-per-node=2 shared-loader.py
+uv run torchrun --standalone --nproc-per-node=2 shared-loader.py
 ```
 
 It uses a CPU `gloo` process group and creates or replaces `shared-example.cpk`.

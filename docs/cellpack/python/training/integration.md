@@ -6,6 +6,9 @@ scGPT model/loss loop. Supply application data, vocabulary, access order and mod
 configuration before adapting it. For a self-contained first run, use the
 [DataLoader program](dataloader.md) or the [CPU process program](process-functions.md).
 
+Install [PyCellPack from PyPI](/python/docs/installation.md) in your application
+environment before adapting the [downloadable source](/downloads/examples/loader-example.py).
+
 ## Prepare the application inputs
 
 | Input | What the blueprint assumes |

@@ -14,12 +14,15 @@ Every mode needs PyTorch and a C++17 compiler: the program always compiles its
 scGPT process preset. The access-function mode additionally compiles a corpus
 callback. Install PyTorch separately for the target CPU or CUDA environment.
 
-From the repository root in a prepared environment:
+In your Python project, install PyCellPack from PyPI and save the
+[downloadable program](/downloads/examples/dataloader-example.py) as
+`dataloader-example.py`. With PyTorch and the compiler available, run:
 
 ```sh
-uv run example/dataloader-example.py
-uv run example/dataloader-example.py --access-fn
-uv run example/dataloader-example.py --device cuda
+uv add pycellpack
+uv run dataloader-example.py
+uv run dataloader-example.py --access-fn
+uv run dataloader-example.py --device cuda
 ```
 
 | Command option | What changes | Required device |

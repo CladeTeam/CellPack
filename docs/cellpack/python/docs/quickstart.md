@@ -1,6 +1,14 @@
 # Matrix quickstart
 
-This program needs only the core package and NumPy. Run it in a writable directory; it creates `matrix.cpk`.
+This program needs only the core package and NumPy. In the Python project
+created during [installation](installation.md), add the published package:
+
+```sh
+uv add pycellpack
+```
+
+Save the Python blocks below in `quickstart.py` and run `uv run quickstart.py`.
+Use a writable directory; the program creates `matrix.cpk`.
 
 <DocDiagram name="python-storage" />
 

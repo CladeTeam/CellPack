@@ -6,6 +6,10 @@ selected matrix slots remain compressed, lazy CellPack Stores. Install the
 AnnData version. The core package does not load these optional dependencies
 until an integration is used.
 
+```sh
+uv add 'pycellpack[anndata]'
+```
+
 <DocChoices title="Choose what to keep" :items="[
   { label: 'H5CP', when: 'Keep annotations and lazily read embedded matrices', detail: 'Encode numeric matrix slots or embed existing Stores, then read with lazy=True.', href: '#encode-an-annotated-dataset' },
   { label: 'Plain H5AD', when: 'Exchange ordinary AnnData matrices', detail: 'Write decoded matrices with write_h5ad. A plain H5AD does not become a Store through lazy=True.', href: '#select-before-materializing' },
