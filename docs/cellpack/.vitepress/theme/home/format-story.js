@@ -68,7 +68,7 @@ export const formatChapter = {
       scene: fshared,
       length: 420,
       beats: [
-        { at: 0, kicker: "FORMAT · STEP 4 · SHARED MODELS", title: "Statistics are shared. <br>Decoding is not.", body: "The probability tables for gaps, ranks and dictionary bytes are fitted to the whole chunk and stored once. Each record keeps its own coding state, so it decodes without its neighbours." },
+        { at: 0, kicker: "FORMAT · STEP 4 · SHARED MODELS", title: "Statistics are shared. <br>Decoding is not.", body: "The chunk stores probability tables once. Each record keeps its own coding state and value dictionary: shared tables decode the symbols, then its own dictionary maps ranks to values. No neighbours are decoded." },
         { at: 0.36, kicker: "FORMAT · STEP 4 · SHARED MODELS", title: "Why not compress <br>each cell alone?", body: `Fitting a model to each cell loses context: ${Math.round((K.per_cell_rans / K.shared - 1) * 100)}% larger even if its tables were free, ${(K.per_cell_rans_with_tables / K.shared).toFixed(1)}× with them. zstd on each cell is ${(K.zstd3_per_cell / K.shared).toFixed(1)}× larger.` },
         { at: 0.72, kicker: "FORMAT · STEP 4 · SHARED MODELS", title: "Metadata is <br>a rounding error.", body: `Tables, gene permutation, offsets and nnz totals add ${STEPS.metadata_per_cell.toFixed(0)} bytes per cell — under 2% of the chunk.` },
       ],

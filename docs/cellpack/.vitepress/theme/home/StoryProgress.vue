@@ -51,7 +51,7 @@ onBeforeUnmount(() => document.removeEventListener("pointerdown", outside));
     @focusout="event => { if (!event.currentTarget.contains(event.relatedTarget)) close(); }"
   >
     <div class="story-progress-spine">
-      <span class="story-progress-caption" aria-hidden="true">IN THIS STORY</span>
+      <span class="story-progress-caption" aria-hidden="true">Developing CellPack</span>
       <a class="story-progress-home" href="#home" aria-label="Home page: CellPack overview" @click="navigate($event, 'home')">
         <span class="story-progress-icon"><StoryIcon name="home" /></span>
         <span class="story-progress-label"><b>Home page</b><span>CellPack overview</span></span>

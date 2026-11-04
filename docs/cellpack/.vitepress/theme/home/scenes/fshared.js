@@ -1,8 +1,8 @@
-import { alpha, clamp, ease, fillRound, grouped, hash, lerp, mix, seg, strokeRound, text } from "../engine.js";
+import { alpha, clamp, ease, fillRound, font, grouped, hash, lerp, mix, seg, strokeRound, text } from "../engine.js";
 import { B, STEPS, ladder } from "./fmt-common.js";
 
 // Act 1: three shared rANS tables, a chunk of records, and one record decoded
-// on its own (its coding state + the shared tables, no neighbours).
+// on its own (its coding state and value dictionary + shared tables).
 // Act 2: the same cells compressed one by one instead (measured).
 // Act 3: the chunk metadata this sharing costs, per cell.
 const K = STEPS.contrast;
@@ -22,7 +22,7 @@ const PARTS = [
   ["record kinds", STEPS.metadata_parts.kinds],
   ["rANS tables", STEPS.metadata_parts.models],
 ];
-const TABLES = ["gaps", "ranks", "dictionary"];
+const TABLES = ["gaps", "ranks", "dict. bytes"];
 // Two rows of records with varied lengths.
 const RECS = (() => {
   const out = [];
@@ -48,25 +48,41 @@ function draw(ctx, env) {
   const area = { y: y0 + 16, h: box.y + box.h - y0 - 16 };
 
   if (act1 > 0) {
+    const cycle = t / 6.4;
+    const active = Math.floor(cycle) % RECS.length;
+    const phase = cycle % 1;
+    const pulse = Math.sin(Math.PI * seg(phase, 0, 0.12)) ** 2;
+    const lookupStart = (i) => 0.12 + i * 0.1;
+    const lookupAt = (i) => {
+      const start = lookupStart(i);
+      return ease.out(seg(phase, start, start + 0.03)) * (1 - ease.inOut(seg(phase, start + 0.11, start + 0.16)));
+    };
     // Shared models.
     const tw = (box.w - 24) / 3;
     const th = Math.min(96, area.h * 0.2);
-    const gapR = Math.max(56, area.h * 0.1);
-    const used = 24 + th + gapR + 74 + 26 + 50;
+    const gapR = Math.max(80, area.h * 0.12);
+    const used = 24 + th + gapR + 74 + 20 + 64 + 20 + 50;
     const ty = area.y + 24 + Math.max(0, (area.h - used) / 2);
     text(ctx, "SHARED BY THE 4,096 CELLS OF A CHUNK", box.x, ty - 10, { size: 11, family: "mono", weight: 700, color: c.teal, a: act1 });
     if (wide) text(ctx, `3 × 512 B of tables → ${STEPS.metadata_parts.models.toFixed(2)} B per cell`, box.x + box.w, ty - 10, { size: 11, family: "mono", color: c.text2, align: "right", a: act1 });
     const models = TABLES.map((name, i) => {
       const x = box.x + i * (tw + 12);
       fillRound(ctx, x, ty, tw, th, 8, alpha(c.tealSoft, act1));
-      text(ctx, `${name}`, x + 12, ty + 20, { size: 12, family: "mono", weight: 600, color: c.teal, a: act1 });
+      text(ctx, name, x + 12, ty + 20, { size: wide ? 12 : 10, family: "mono", weight: 600, color: c.teal, a: act1, maxWidth: tw - 24 });
       const bars = 18;
+      const barW = (tw - 24) / bars;
+      const slot = Math.floor(hash(active, i + 71) * 8);
+      const focus = lookupAt(i);
+      const hit = focus * ease.out(seg(phase, lookupStart(i) + 0.08, lookupStart(i) + 0.1));
+      const slotX = x + 12 + slot * barW;
+      fillRound(ctx, slotX - 2, ty + 30, barW + 2, th - 36, 2, alpha(c.accent, 0.16 * hit * act1));
       for (let k = 0; k < bars; k++) {
         const h = (th - 38) * Math.exp(-k * (0.22 + i * 0.08)) * (0.8 + 0.2 * hash(k, i));
-        ctx.fillStyle = alpha(c.teal, 0.75 * act1);
-        ctx.fillRect(x + 12 + k * ((tw - 24) / bars), ty + th - 10 - h, (tw - 24) / bars - 2, h);
+        ctx.fillStyle = alpha(k === slot ? mix(c.teal, c.accent, hit) : c.teal, (0.75 + (k === slot ? hit * 0.25 : 0)) * act1);
+        ctx.fillRect(x + 12 + k * barW, ty + th - 10 - h, barW - 2, h);
       }
-      return { x, cx: x + tw / 2, by: ty + th };
+      strokeRound(ctx, slotX - 2, ty + 30, barW + 2, th - 36, 2, alpha(c.accent, hit * act1), 1.2);
+      return { cx: slotX + (barW - 2) / 2, by: ty + th, focus };
     });
 
     // The chunk's records.
@@ -78,8 +94,6 @@ function draw(ctx, env) {
     const rx0 = box.x + 10;
     const rw = box.w - 20;
     const recY = (row) => fy + 22 + row * (rh + 6);
-    const active = Math.floor(t * 0.8) % RECS.length;
-    const phase = (t * 0.8) % 1;
     RECS.forEach((r, i) => {
       const x = rx0 + r.u * rw;
       const w = r.w * rw - 3;
@@ -88,33 +102,94 @@ function draw(ctx, env) {
       ctx.fillRect(x, recY(r.row), w, rh);
       ctx.fillStyle = alpha(on ? mix(c.accent, c.text, 0.45) : mix(c.teal, c.text, 0.5), act1);
       ctx.fillRect(x, recY(r.row), 4, rh);
+      if (on) strokeRound(ctx, x - 2, recY(r.row) - 2, w + 4, rh + 4, 3, alpha(c.accent, act1 * (0.65 + 0.35 * pulse)), 1.5 + pulse);
     });
-    // Each model feeds the active record.
+    // Lookup paths stay above the chunk so they never cross neighbouring records.
     const ar = RECS[active];
-    const ax = rx0 + ar.u * rw + (ar.w * rw) / 2;
-    const ay = recY(ar.row);
-    models.forEach((m) => {
+    const ax = rx0 + ar.u * rw + (ar.w * rw - 3) / 2;
+    const ay = fy - 5;
+    models.forEach((m, i) => {
+      if (m.focus <= 0) return;
+      const arrive = ease.inOut(seg(phase, lookupStart(i), lookupStart(i) + 0.1));
+      const endY = m.by + 4;
+      const revealY = lerp(ay, endY, arrive);
+      ctx.save();
       ctx.beginPath();
-      ctx.moveTo(m.cx, m.by);
-      ctx.bezierCurveTo(m.cx, m.by + (ay - m.by) * 0.6, ax, ay - (ay - m.by) * 0.5, ax, ay - 2);
-      ctx.strokeStyle = alpha(c.teal, 0.7 * act1);
-      ctx.lineWidth = 1.5;
+      ctx.rect(box.x - 4, revealY - 4, box.w + 8, ay - revealY + 8);
+      ctx.clip();
+      ctx.beginPath();
+      ctx.moveTo(ax, ay);
+      ctx.bezierCurveTo(ax, ay - gapR * 0.45, m.cx, endY + gapR * 0.45, m.cx, endY);
+      ctx.strokeStyle = alpha(c.teal, 0.65 * m.focus * act1);
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([3, 5]);
       ctx.stroke();
-      // A token runs down each link.
-      const u = ease.inOut(clamp(phase * 1.6));
-      const qx = lerp(lerp(m.cx, ax, u * u), ax, u * u * u);
-      const qy = lerp(m.by, ay, u);
-      ctx.fillStyle = alpha(c.teal, act1 * (1 - u));
-      ctx.fillRect(qx - 3, qy - 3, 6, 6);
+      ctx.restore();
+      ctx.beginPath();
+      ctx.moveTo(m.cx - 3, endY + 5);
+      ctx.lineTo(m.cx, endY);
+      ctx.lineTo(m.cx + 3, endY + 5);
+      ctx.strokeStyle = alpha(c.teal, seg(arrive, 0.85, 1) * m.focus * act1);
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
     });
+    const caption = phase < 0.12 ? `Select cell ${active}` : phase < 0.5 ? "Look up shared tables" : phase < 0.78 ? "Look up this cell's dictionary" : phase < 0.94 ? "Decode this cell" : "Cell decoded";
+    const captionSize = wide ? 12 : 10;
+    font(ctx, captionSize, "mono", 600);
+    const captionW = ctx.measureText(caption).width;
+    const captionX = box.x + box.w / 2;
+    const captionY = ty + th + gapR / 2;
+    fillRound(ctx, captionX - captionW / 2 - 10, captionY - 14, captionW + 20, 23, 5, alpha(c.bg, act1));
+    text(ctx, caption, captionX, captionY + 2, { size: captionSize, family: "mono", weight: 600, color: phase < 0.5 ? c.teal : c.accent, align: "center", a: act1 });
+
+    // The selected record owns this rank-to-value dictionary; the chunk's
+    // probability tables decode its encoded bytes, not its rank lookups.
+    const localY = fy + fh + 20;
+    const localH = 64;
+    const dict = [1, 2, 3, 5].map((count) => Math.log1p(count + active % 3));
+    const entryW = (box.w - 20 - 6 * (dict.length - 1)) / dict.length;
+    const entryX = (rank) => box.x + 10 + rank * (entryW + 6);
+    const reveal = ease.out(seg(phase, 0.48, 0.54));
+    const localFocus = ease.out(seg(phase, 0.52, 0.54)) * (1 - ease.inOut(seg(phase, 0.74, 0.78)));
+    const rank = Math.min(dict.length - 1, Math.floor(seg(phase, 0.52, 0.76) * dict.length));
+    fillRound(ctx, box.x, localY, box.w, localH, 8, alpha(c.surface, act1));
+    strokeRound(ctx, box.x, localY, box.w, localH, 8, alpha(c.accent, act1 * (0.25 + 0.45 * reveal)), 1);
+    text(ctx, `CELL ${active} · VALUE DICTIONARY`, box.x + 10, localY + 16, { size: wide ? 10 : 9, family: "mono", weight: 600, color: c.accent, a: act1 });
+    if (wide) text(ctx, "rank → value · stored in this record", box.x + box.w - 10, localY + 16, { size: 10, family: "mono", color: c.text3, align: "right", a: act1 });
+    dict.forEach((value, i) => {
+      const hit = i === rank ? localFocus : 0;
+      fillRound(ctx, entryX(i), localY + 26, entryW, 26, 4, alpha(c.accent, act1 * (0.06 + 0.1 * reveal + 0.15 * hit)));
+      strokeRound(ctx, entryX(i), localY + 26, entryW, 26, 4, alpha(c.accent, act1 * hit), 1.4);
+      text(ctx, `${i} → ${value.toFixed(2)}`, entryX(i) + entryW / 2, localY + 43, { size: wide ? 12 : 9, family: "mono", weight: hit > 0 ? 600 : 400, color: c.text, align: "center", a: act1 * reveal, maxWidth: entryW - 8 });
+    });
+    if (localFocus > 0) {
+      const endX = entryX(rank) + entryW / 2;
+      const startY = fy + fh + 2;
+      const endY = localY - 3;
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(ax, startY);
+      ctx.bezierCurveTo(ax, startY + 8, endX, endY - 8, endX, endY);
+      ctx.strokeStyle = alpha(c.accent, 0.75 * localFocus * act1);
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([3, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(endX - 3, endY - 5);
+      ctx.lineTo(endX, endY);
+      ctx.lineTo(endX + 3, endY - 5);
+      ctx.stroke();
+      ctx.restore();
+    }
     // Decoded output: only this cell's values.
-    const oy = fy + fh + 26;
+    const oy = localY + localH + 20;
     const n = 14;
     const ow = Math.min(34, (box.w - 80 - 3 * n) / n);
-    const filled = clamp((phase - 0.45) / 0.45) * n;
+    const filled = seg(phase, 0.78, 0.92) * n;
     text(ctx, "decode →", box.x, oy + 16, { size: 12, family: "mono", weight: 700, color: c.accent, a: act1 });
-    for (let k = 0; k < n; k++) fillRound(ctx, box.x + 80 + k * (ow + 3), oy, ow, 22, 3, alpha(c.accent, act1 * (k < filled ? 0.85 : 0.12)));
-    text(ctx, wide ? "this cell only · its own state + the shared tables · no neighbours decoded" : "this cell only · no neighbours", box.x + 80, oy + 42, { size: wide ? 12 : 9, family: "mono", color: c.text2, a: act1 });
+    for (let k = 0; k < n; k++) fillRound(ctx, box.x + 80 + k * (ow + 3), oy, ow, 22, 3, alpha(c.accent, act1 * lerp(0.12, 0.85, clamp(filled - k))));
+    text(ctx, wide ? "this cell only · its own dictionary + shared models · no neighbours decoded" : "own dictionary · no neighbours", box.x + 80, oy + 42, { size: wide ? 12 : 9, family: "mono", color: c.text2, a: act1 });
     if (wide) text(ctx, "▌ = the record's own rANS state", box.x + box.w, fy + 15, { size: 10, family: "mono", color: c.text3, align: "right", a: act1 });
   }
 
