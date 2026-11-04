@@ -5,7 +5,7 @@
 <h1 align="center">CellPack</h1>
 
 <p align="center">
-  <strong>Compact single-cell storage. Million-cell-per-second loading. Built for AnnData.</strong>
+  <strong>Compact single-cell storage. Million-cell-per-second loading. Compatible with AnnData.</strong>
 </p>
 
 <p align="center">
@@ -25,7 +25,8 @@
 CellPack is a storage format and data loader for single-cell expression
 matrices. Every cell is a compressed record that can be read on its own, so
 shuffled training batches stream straight from disk at over a million cells
-per second. Your AnnData files stay AnnData files, at a fraction of the size.
+per second. It works alongside AnnData: swap only the expression matrix and
+keep everything else.
 
 ## Install
 
@@ -48,11 +49,10 @@ order you choose.
   <img src="https://raw.githubusercontent.com/CladeTeam/CellPack/main/assets/performance-loading.svg" alt="Random-order loading from one NVMe SSD: CellPack 1,165,000 cells/s; other loaders 1,163 to 79,135 cells/s." width="1120">
 </picture>
 
-## Keep your AnnData workflow
+## Compatible with AnnData
 
 An H5CP file is an H5AD file whose expression matrix `X` is a CellPack matrix.
-Everything else stays as it is, so `obs`, `var`, embeddings and metadata work
-as before.
+`obs`, `var`, embeddings and metadata keep their AnnData encoding.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/CladeTeam/CellPack/main/assets/anndata-integration-dark.svg">
@@ -70,7 +70,7 @@ subset = cells[cell_ids, gene_ids].to_memory()  # an AnnData object for Scanpy
 The same file feeds the PyTorch loader. See the
 [AnnData guide](https://cladeteam.github.io/CellPack/python/docs/anndata.html).
 
-## 7.96× smaller than AnnData
+## 7.96× smaller than H5AD
 
 A 124M-cell corpus, with its counts and annotations, takes 2.28 TB as H5AD
 and **286 GB** as H5CP. The counts matrix alone shrinks **9.74×**, from
