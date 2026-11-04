@@ -218,7 +218,7 @@ class Figure:
             options.flavor = "woff2"
             options.layout_features = ["kern", "tnum"]
             options.name_IDs = []
-            font = TTFont(font_file(family, static))
+            font = TTFont(font_file(family, static), recalcTimestamp=False)
             sub = subset.Subsetter(options)
             sub.populate(text="".join(sorted(chars | {" "})))
             sub.subset(font)
@@ -349,7 +349,7 @@ def loading(data, mode, c):
         "LOADING · RANDOM ORDER",
         "1.165M cells/s from one SSD",
         "Shuffled cells per second, read from one NVMe SSD",
-        data["loading"]["protocol"],
+        "Random-order loading from one NVMe SSD: CellPack 1,165,000 cells/s; other loaders 1,163 to 79,135 cells/s.",
         "accent",
     )
     x0, x1, vmax = 200, 960, 1_250_000
@@ -390,7 +390,7 @@ def storage(data, mode, c):
         "STORAGE",
         f"124M cells in {s['h5cp_bytes'] / 1e9:.0f} GB",
         "The same 124M-cell corpus as AnnData H5AD and as CellPack H5CP",
-        s["protocol"],
+        "A 124M-cell corpus: 4.87 TB as H5AD and 611 GB as H5CP. Expression matrix X: 2.22 TB versus 227.7 GB.",
     )
     h5ad, h5cp = mix(c["bg"], c["text3"], 0.5), c["teal"]
     fig.legend(LEFT, 152, [(h5ad, "AnnData H5AD"), (h5cp, "CellPack H5CP")])
@@ -427,7 +427,7 @@ def compression(data, mode, c):
         "COMPRESSION",
         "Best compression, one cell at a time",
         "Compression ratio on single-cell expression matrices · higher is better",
-        data["codecs"]["protocol"],
+        "Compression ratio on single-cell expression matrices. CellPack 5.89×, one cell at a time, ahead of general-purpose codecs at one cell or 2,048 cells per block.",
     )
     block, cell = mix(c["bg"], c["text3"], 0.32), mix(c["bg"], c["text3"], 0.75)
     fig.legend(
@@ -476,7 +476,7 @@ def billion(data, mode, c):
         "SCALE",
         f"5B cells in {end / 60:.1f} minutes",
         "Five epochs over a 1B-cell corpus, freshly shuffled every epoch",
-        data["billion_cell"]["protocol"],
+        "Five shuffled epochs over a 1B-cell corpus: 3.24M cells/s on average, 3.67M cells/s in steady state, 5B cells in 25.7 minutes.",
         "accent",
     )
     gap = 14
