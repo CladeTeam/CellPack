@@ -1,6 +1,6 @@
 {
   "simulated": false,
-  "run": "/mnt/shared-storage-user/dnacoding/wangzhongqi/Code/Project/scload/outputs/cellpack/billion-cell/raid0-online-1t-w1b-e5-thpoff-20261031-022112",
+  "run": "raid0-online-1t-w1b-e5-thpoff-20261031-022112",
   "receipt_status": "complete",
   "paper_eligible": true,
   "epochs": [
