@@ -79,7 +79,7 @@ def test_fancy_cells_genes_and_buffers(tmp_path, dtype, source):
     )
 
 
-def test_native_loader_one_shot_and_embedded_sources(tmp_path):
+def test_native_loader_one_shot(tmp_path):
     x = np.arange(40, dtype=np.float32).reshape(10, 4)
     source = cellpack.write(tmp_path / "m.cpk", x)
     rows = [8, 3, 8, 0, 1]
@@ -93,8 +93,12 @@ def test_native_loader_one_shot_and_embedded_sources(tmp_path):
     data_source = loader.DataSource([(source, np.arange(4))], 4)
     np.testing.assert_array_equal(loader.load(data_source, rows), x[rows])
     assert loader.load(data_source, []).shape == (0, 4)
-    import anndata as ad
 
+
+def test_native_loader_embedded_sources(tmp_path):
+    ad = pytest.importorskip("anndata")
+    x = np.arange(40, dtype=np.float32).reshape(10, 4)
+    rows = [8, 3, 8, 0, 1]
     io.write_h5cp(tmp_path / "cells.h5cp", ad.AnnData(x), encode=True)
     embedded = io.open_matrix(tmp_path / "cells.h5cp")
     np.testing.assert_array_equal(
