@@ -7,6 +7,9 @@ Outputs:
                           flaps fall shut and press the pile down, tape runs
                           over the seam and down the side, and the cell
                           sticker is laid on from the back corner forward
+  cellpack-animation-with-delay-1.5s.svg
+                          the same animation, holding its first frame for
+                          1.5 s before it plays
 
 The cells come from a rigid-sphere simulation (cell_sim.py), rendered as
 cel-shaded spheres: each one's path, spin and depth order follow the physics.
@@ -39,6 +42,7 @@ VIEW = (0.0, VIEW_TOP, float(SIZE), SIZE - VIEW_TOP)
 
 # Timeline in seconds.
 END = 6.65
+DELAYED = 1.5  # s the delayed variant holds its first frame
 # Cells fall as a Poisson process whose rate follows a logistic curve over
 # RAIN: a long thin tail at the start (a lone cell or two), then a short climb
 # to a downpour. Where they fall follows the same curve, opening out from the
@@ -90,7 +94,10 @@ Value = tuple[float, ...] | str
 class Track:
     """Keyframes for one attribute over [0, END]. Tuples interpolate linearly;
     strings switch discretely. live is when the element is rendered at all:
-    outside it the value is free."""
+    outside it the value is free. delay holds the first frame that long
+    before the timeline starts."""
+
+    delay = 0.0
 
     def __init__(self, attr: str, keys: list[tuple[float, Value]], fmt=None,
                  transform: str | None = None, live: tuple[float, float] = (0.0, END)):
@@ -162,10 +169,15 @@ class Track:
             t0, t1 = run[0][0], run[-1][0]
             if t1 <= t0:
                 continue
-            values = ";".join(v for _, v in run)
-            times = ";".join(f"{(k - t0) / (t1 - t0):.4f}" for k, _ in run)
             # A span ending before END returns to the base value; one reaching it holds the last frame.
             fill = "freeze" if t1 >= END else "remove"
+            if self.delay:
+                run = [(k + self.delay, v) for k, v in run]
+                if t0 == 0:
+                    run.insert(0, (0.0, run[0][1]))
+                t0, t1 = run[0][0], run[-1][0]
+            values = ";".join(v for _, v in run)
+            times = ";".join(f"{(k - t0) / (t1 - t0):.4f}" for k, _ in run)
             span = f'begin="{t0:.4f}s" dur="{t1 - t0:.4f}s" fill="{fill}"'
             if self.transform:
                 out.append(f'<animateTransform attributeName="transform" type="{self.transform}" '
@@ -200,6 +212,8 @@ class Track:
         out = []
         for a, b, v in self._switches()[1]:
             tail = ' fill="freeze"' if b >= END else ""
+            if self.delay:
+                a, b = (0.0 if a == 0 else a + self.delay), b + self.delay
             out.append(f'<set attributeName="{self.attr}" to="{v}" begin="{a:.4f}s" dur="{b - a:.4f}s"{tail}/>')
         return "".join(out)
 
@@ -717,7 +731,16 @@ def sticker_layers(t: float | None) -> tuple[str, str]:
     return on_face, lifted
 
 
-def build_animation(palette: str = "teal", t: float | None = None, rec: Recording | None = None) -> str:
+def build_animation(palette: str = "teal", t: float | None = None, rec: Recording | None = None,
+                    delay: float = 0.0) -> str:
+    Track.delay = delay
+    try:
+        return _animation(palette, t, rec)
+    finally:
+        Track.delay = 0.0
+
+
+def _animation(palette: str, t: float | None, rec: Recording | None) -> str:
     pal = PALETTES[palette]
     rec = rec if rec is not None else run_sim()
     resting, flying = cell_layers(rec, t)
@@ -778,7 +801,9 @@ def main() -> None:
     rec = run_sim()
     args.out_dir.mkdir(parents=True, exist_ok=True)
     for name, text in (("logo.svg", build_logo(args.palette)),
-                       ("cellpack-animation.svg", build_animation(args.palette, rec=rec))):
+                       ("cellpack-animation.svg", build_animation(args.palette, rec=rec)),
+                       (f"cellpack-animation-with-delay-{DELAYED:g}s.svg",
+                        build_animation(args.palette, rec=rec, delay=DELAYED))):
         path = args.out_dir / name
         path.write_text(text, encoding="utf-8")
         print(path)

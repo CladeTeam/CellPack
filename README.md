@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/CladeTeam/CellPack/main/assets/logo.svg" alt="CellPack logo" width="128" height="128">
+  <img src="https://raw.githubusercontent.com/CladeTeam/CellPack/main/assets/cellpack-animation-with-delay-1.5s.svg" alt="CellPack logo" width="160">
 </p>
 
 <h1 align="center">CellPack</h1>
