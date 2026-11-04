@@ -378,8 +378,14 @@ def loading(data, mode, c):
 def storage(data, mode, c):
     s = data["storage_scale"]
     x = next(r for r in data["expression_storage"]["rows"] if r["slot"] == "X")
+    annotations = s["nonmatrix_bytes"]
     groups = [
-        ("Whole files", "all matrices and annotations", s["h5ad_scipy_bytes"], s["h5cp_bytes"]),
+        (
+            "Counts + annotations",
+            "X with obs, var and uns",
+            x["h5ad_scipy_bytes"] + annotations,
+            x["cellpack_matrix_bytes"] + annotations,
+        ),
         ("Expression matrix X", "", x["h5ad_scipy_bytes"], x["cellpack_matrix_bytes"]),
     ]
     top, bar, step, gap = 184, 26, 34, 44
@@ -389,18 +395,18 @@ def storage(data, mode, c):
         c,
         bottom + 66,
         "STORAGE",
-        f"124M cells in {s['h5cp_bytes'] / 1e9:.0f} GB",
+        f"124M cells in {groups[0][3] / 1e9:.0f} GB",
         "The same 124M-cell corpus as AnnData H5AD and as CellPack H5CP",
-        "A 124M-cell corpus: 4.87 TB as H5AD and 611 GB as H5CP. Expression matrix X: 2.22 TB versus 227.7 GB.",
+        "A 124M-cell corpus, counts and annotations: 2.28 TB as H5AD and 285.9 GB as H5CP. Expression matrix X: 2.22 TB versus 227.7 GB.",
     )
     h5ad, h5cp = mix(c["bg"], c["text3"], 0.5), c["teal"]
     fig.legend(LEFT, 152, [(h5ad, "AnnData H5AD"), (h5cp, "CellPack H5CP")])
-    x0, x1, vmax = 240, 1000, 5.2e12
+    x0, x1, vmax = 240, 1000, 2.6e12
 
     def scale(v):
         return x0 + v / vmax * (x1 - x0)
 
-    fig.xgrid(scale, [(t * 1e12, f"{t} TB" if t else "0") for t in range(6)], top - 8, bottom)
+    fig.xgrid(scale, [(t * 5e11, f"{num(t / 2)} TB" if t else "0") for t in range(6)], top - 8, bottom)
     for g, (name, detail, before, after) in enumerate(groups):
         gy = top + g * (span + gap)
         fig.text(x0 - 16, gy + span / 2 + (-3 if detail else 5), name, 15, c["text"], 600, "end")

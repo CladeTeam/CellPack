@@ -72,12 +72,13 @@ The same file feeds the PyTorch loader. See the
 
 ## 7.96× smaller than AnnData
 
-A 124M-cell corpus takes 4.87 TB as H5AD and **611 GB** as H5CP. Its
-expression matrices shrink **9.74×**, from 2.22 TB to 227.7 GB.
+A 124M-cell corpus, with its counts and annotations, takes 2.28 TB as H5AD
+and **286 GB** as H5CP. The counts matrix alone shrinks **9.74×**, from
+2.22 TB to 227.7 GB.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/CladeTeam/CellPack/main/assets/performance-storage-dark.svg">
-  <img src="https://raw.githubusercontent.com/CladeTeam/CellPack/main/assets/performance-storage.svg" alt="A 124M-cell corpus. Whole files: 4.87 TB as H5AD, 611 GB as H5CP, 7.96× smaller. Expression matrix X: 2.22 TB versus 227.7 GB, 9.74× smaller." width="1120">
+  <img src="https://raw.githubusercontent.com/CladeTeam/CellPack/main/assets/performance-storage.svg" alt="A 124M-cell corpus. Counts and annotations: 2.28 TB as H5AD, 285.9 GB as H5CP, 7.96× smaller. Expression matrix X: 2.22 TB versus 227.7 GB, 9.74× smaller." width="1120">
 </picture>
 
 ## Built for single-cell data
