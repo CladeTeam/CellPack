@@ -41,8 +41,13 @@ columns with sparse zero values still return zero.
 ## Run locally
 
 Download **main.rs** and **common.rs** from the same example and put both in the
-`src/` directory of a Rust package. Add `cellpack` as a path dependency pointing
-to this checkout's `crates/cellpack` directory. Use Rust 1.96.0 and edition 2024.
+`src/` directory of a Rust package. Add the published crate from crates.io:
+
+```sh
+cargo add cellpack@0.1.0
+```
+
+Use Rust 1.96.0 and edition 2024. No CellPack checkout is needed.
 The helper takes an output directory as its first argument:
 
 ```sh

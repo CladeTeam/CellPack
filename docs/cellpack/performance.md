@@ -73,12 +73,11 @@ unsupported instructions. Set it before launching the process; the first runtime
 or codec context fixes the binding. Invalid values fail environment-based
 initialization. Changing the variable afterward cannot rebind existing contexts.
 
-For example, run the small correctness fixture with scalar kernels:
+For example, set up the [quickstart](quickstart.md) with the crates.io dependency
+and run that small correctness fixture with scalar kernels:
 
 ```sh
-CELLPACK_KERNELS=scalar cargo run --locked \
-  --manifest-path docs/cellpack/examples/Cargo.toml \
-  --bin quickstart -- tmp/cellpack-guide/scalar
+CELLPACK_KERNELS=scalar cargo run -- output/scalar
 ```
 
 Compare caps in separate fresh processes while keeping input, workload and

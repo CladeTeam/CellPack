@@ -36,11 +36,12 @@ executes four variants. Its checks establish these results:
 
 :::
 
-The `common` module is listed in [storage](storage.md). Run with:
+In the application from [installation](installation.md), save
+[planning.rs](/downloads/rust/planning.rs) as `src/main.rs` and
+[common.rs](/downloads/rust/common.rs) as `src/common.rs`, then run:
 
 ```sh
-cargo run --locked --manifest-path docs/cellpack/examples/Cargo.toml \
-  --bin planning -- tmp/cellpack-guide/planning
+cargo run -- output/planning
 ```
 
 The final line starts with `page reads:` and reports the observed counters and

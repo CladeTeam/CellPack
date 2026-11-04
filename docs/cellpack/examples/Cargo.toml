@@ -8,7 +8,7 @@ publish = false
 [workspace]
 
 [dependencies]
-cellpack = { path = "../../../crates/cellpack", features = ["serde"] }
+cellpack = { version = "0.1.0", features = ["serde"] }
 
 [[bin]]
 name = "quickstart"

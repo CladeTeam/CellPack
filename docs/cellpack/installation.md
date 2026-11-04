@@ -2,7 +2,8 @@
 
 ## Requirements
 
-- Rust 1.96 for the documentation build and guide examples; edition 2024.
+- Rust 1.96 is used for the guide examples; edition 2024. The published crate
+  declares Rust 1.89 as its minimum version.
 - Linux: storage uses Unix file interfaces, and the loader uses Linux memory,
   futex, and I/O interfaces.
 - The default loader backend requires `io_uring`. Select `IoBackend::Pread`
@@ -13,23 +14,24 @@
 The Rust core has no Python dependency. `crates/pycellpack` is the separate PyO3
 binding crate and is not needed for the workflows in this manual.
 
-The core workspace declares `rust-version = "1.89"`. Treat that as its manifest
-declaration rather than a verified minimum: the current intrinsic calls fail
-the workspace's unsafe-operation lint under Rust 1.91. This guide uses Rust 1.96
-for a reproducible build and executable examples.
+## Add CellPack from crates.io
 
-## Depend on a checkout
+[CellPack is published on crates.io](https://crates.io/crates/cellpack).
+Add it to an existing Rust application:
 
-The workspace currently sets `publish = false`. Add a path dependency to your
-application's `Cargo.toml`, using the actual path to your checkout:
+```sh
+cargo add cellpack@0.1.0
+```
+
+Or add the dependency directly to your application's `Cargo.toml`:
 
 ```toml
 [dependencies]
-cellpack = { path = "/absolute/path/to/CellPack/crates/cellpack" }
+cellpack = "0.1.0"
 ```
 
-Point at the crate directory, rather than the workspace root. A relative path
-works when your application and the checkout have a known relative layout.
+Cargo downloads the crate and its dependencies from the registry. No CellPack
+repository checkout is required.
 
 ## Features
 
@@ -39,25 +41,24 @@ works when your application and the checkout have a known relative layout.
 
 ```toml
 [dependencies]
-cellpack = { path = "/absolute/path/to/CellPack/crates/cellpack", features = ["serde"] }
+cellpack = { version = "0.1.0", features = ["serde"] }
 ```
 
 The binary plan format and `CostModel::to_bytes` / `from_bytes` do not require
 `serde`. Profiling requires no build feature: timed and untimed loader instances
 are included in the same build.
 
-## Build and check
+## Check your application
 
-Run these commands from the repository root:
+Run these commands from your application's directory:
 
 ```sh
-cargo check --locked -p cellpack
-cargo test --locked -p cellpack --all-features
-cargo doc --locked -p cellpack --all-features --no-deps
+cargo check
+cargo doc -p cellpack --no-deps --open
 ```
 
-`-p cellpack` selects the core crate. The API entry point is
-`target/doc/cellpack/index.html`.
+The API entry point is `target/doc/cellpack/index.html`. The published Rust API
+is also available on [docs.rs](https://docs.rs/cellpack/0.1.0/cellpack/).
 
 On systems that restrict compilation on development machines, run compilation,
 examples, and full documentation builds on an authorized compute node.
@@ -65,13 +66,22 @@ See [documentation development](contributing.md) for the documentation toolchain
 
 ## Run a first example
 
-The guide examples generate their own tiny matrices:
+Create an application and add the published crate:
 
 ```sh
-cargo run --locked --manifest-path docs/cellpack/examples/Cargo.toml \
-  --bin quickstart -- tmp/cellpack-guide/quickstart
+cargo new cellpack-demo
+cd cellpack-demo
+cargo add cellpack@0.1.0
 ```
 
-The example writes `matrix.cpk` in the supplied directory and checks its decoded
-contents. Use a dedicated example directory: rerunning an example overwrites its
-named outputs. Continue with the [quickstart](quickstart.md) for the full source.
+Save the [quickstart source](/downloads/rust/quickstart.rs) as `src/main.rs`, then run:
+
+```sh
+cargo run -- output/quickstart
+```
+
+The example generates its own tiny matrix, writes `matrix.cpk` in the supplied
+directory, and checks its decoded contents. Use a dedicated output directory:
+rerunning an example overwrites its named outputs. Continue with the
+[quickstart](quickstart.md) for the full source. Other guide programs that declare
+`mod common;` also need [common.rs](/downloads/rust/common.rs) saved as `src/common.rs`.

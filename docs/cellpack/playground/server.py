@@ -56,9 +56,9 @@ class Playground:
             "--size", "536870912", "--tmpfs", "/work", "--dir", "/work/src",
             "--ro-bind", str(directory / "src"), "/work/src",
             "--ro-bind", str(directory / "Cargo.toml"), "/work/Cargo.toml",
+            "--ro-bind", str(self.state / "Cargo.lock"), "/work/Cargo.lock",
             "--ro-bind", str(self.state / "deps"), "/deps",
             "--ro-bind", str(self.state / "bin"), "/examples",
-            "--ro-bind", str(self.state / "library"), "/library",
             "--ro-bind", self.manifest["toolchain_path"], "/toolchain",
             "--ro-bind", self.manifest["analyzer_toolchain_path"], "/analyzer-toolchain",
             "--ro-bind", str(self.state / "rust-analyzer"), "/rust-analyzer",
@@ -79,8 +79,8 @@ class Playground:
         (directory / "src/main.rs").write_text(code)
         shutil.copy2(self.state / "common.rs", directory / "src/common.rs")
         (directory / "Cargo.toml").write_text(
-            '[package]\nname = "cellpack-playground"\nversion = "0.0.0"\nedition = "2024"\n'
-            '[dependencies]\ncellpack = { path = "/library/crates/cellpack", features = ["serde"] }\n'
+            '[package]\nname = "cellpack-guide-examples"\nversion = "0.1.0"\nedition = "2024"\n'
+            '[dependencies]\ncellpack = { version = "0.1.0", features = ["serde"] }\n'
         )
 
     async def spawn(self, directory: Path, *command: str):

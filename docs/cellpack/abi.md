@@ -133,12 +133,12 @@ contents are unspecified on entry.
 
 ### Example: a CSR + dense pair in Rust
 
-The complete program is `docs/cellpack/examples/abi.rs` in the guide package.
-Run it with the shared fixture from [storage](storage.md):
+In the application from [installation](installation.md), save the
+[complete program](/downloads/rust/abi.rs) as `src/main.rs` and the
+[shared fixture](/downloads/rust/common.rs) as `src/common.rs`, then run:
 
 ```sh
-cargo run --locked --manifest-path docs/cellpack/examples/Cargo.toml \
-  --bin abi -- tmp/cellpack-guide/abi
+cargo run -- output/abi
 ```
 
 Each cell produces a 12-byte record: the scaled row total, the column of its

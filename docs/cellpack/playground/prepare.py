@@ -9,7 +9,6 @@ import subprocess
 import sys
 
 DOCS = Path(__file__).resolve().parents[1]
-ROOT = DOCS.parents[1]
 STATE = DOCS / "_build/playground"
 sys.path.insert(0, str(DOCS))
 from api_content import EXAMPLES
@@ -53,16 +52,7 @@ def main():
     if not (Path(toolchain).parent.parent / "lib/rustlib/src/rust/library/core/src/lib.rs").is_file():
         raise RuntimeError("Install the rust-src component for Rust 1.96.0 before preparing analysis")
     analyzer = subprocess.check_output(["rustup", "which", "rust-analyzer"], text=True).strip()
-    library_root = STATE / "library"
-    destination = library_root / "crates/cellpack"
-    if destination.exists():
-        shutil.rmtree(destination)
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copytree(ROOT / "crates/cellpack", destination)
-    workspace = (ROOT / "Cargo.toml").read_text().replace(
-        'members = ["crates/cellpack", "crates/pycellpack"]', 'members = ["crates/cellpack"]')
-    (library_root / "Cargo.toml").write_text(workspace)
-    shutil.copy2(ROOT / "Cargo.lock", library_root / "Cargo.lock")
+    shutil.copy2(DOCS / "examples/Cargo.lock", STATE / "Cargo.lock")
     shutil.copy2(DOCS / "examples/common.rs", STATE / "common.rs")
     examples = {}
     binaries = STATE / "bin"

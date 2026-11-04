@@ -24,10 +24,12 @@ little-endian `u16` bytes; compression does not convert their numeric type.
 
 <<< @/examples/codec.rs
 
-Run it from the repository root:
+In the application from [installation](installation.md), save
+[codec.rs](/downloads/rust/codec.rs) as `src/main.rs` and
+[common.rs](/downloads/rust/common.rs) as `src/common.rs`, then run:
 
 ```sh
-cargo run --locked --manifest-path docs/cellpack/examples/Cargo.toml --bin codec
+cargo run
 ```
 
 The assertions verify the result:

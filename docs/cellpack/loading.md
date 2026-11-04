@@ -49,11 +49,12 @@ rows. Each batch has both output regions; schema count does not multiply its
 <<< @/examples/loading.rs
 :::
 
-The shared `common` module is shown in [storage](storage.md). Run with:
+In the application from [installation](installation.md), save
+[loading.rs](/downloads/rust/loading.rs) as `src/main.rs` and
+[common.rs](/downloads/rust/common.rs) as `src/common.rs`, then run:
 
 ```sh
-cargo run --locked --manifest-path docs/cellpack/examples/Cargo.toml \
-  --bin loading -- tmp/cellpack-guide/loading
+cargo run -- output/loading
 ```
 
 The example uses buffered `Pread` reads, two workers, and tiny slots. These settings

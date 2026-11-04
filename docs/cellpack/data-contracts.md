@@ -57,11 +57,12 @@ when they are used:
 
 <<< @/examples/contracts.rs#access
 
-The complete program is `docs/cellpack/examples/contracts.rs`:
+In the application from [installation](installation.md), save the
+[complete program](/downloads/rust/contracts.rs) as `src/main.rs` and
+[common.rs](/downloads/rust/common.rs) as `src/common.rs`, then run:
 
 ```sh
-cargo run --locked --manifest-path docs/cellpack/examples/Cargo.toml \
-  --bin contracts -- tmp/cellpack-guide/contracts
+cargo run -- output/contracts
 ```
 
 ## Record bytes are trusted

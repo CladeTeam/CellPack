@@ -11,7 +11,9 @@ local search, page outlines, syntax highlighting, and code copying.
 Authored guides and module contracts are ordinary Markdown files in this
 directory. `reference.py` derives the public interface pages and catalogs from
 rustdoc. `examples/` is an independent Cargo package whose Rust sources are
-included directly in guide pages.
+included directly in guide pages. This package depends on the published
+`cellpack` crate from crates.io; the site's API generator reads the repository
+source. Keep the guide dependency aligned with the release documented by the site.
 
 | File or directory | Purpose |
 |---|---|
@@ -64,6 +66,17 @@ uv run --locked --project docs/cellpack \
 When previewing on a remote compute node, forward that port through your SSH
 connection. Follow your environment's proxy and compute-node rules for package
 installation, compilation, and browser checks.
+
+The API example service also uses the registry crate. Before its offline
+preparation step, populate the Cargo cache with the locked guide dependencies:
+
+```sh
+cargo fetch --locked --manifest-path docs/cellpack/examples/Cargo.toml
+```
+
+Preparation vendors those dependencies for offline execution and language
+analysis. The operator workflow is described in the
+[example service guide](playground/README.md).
 
 ## Live editing
 
@@ -207,4 +220,8 @@ measurements of public hosting latency.
 Update Python dependencies through `uv add --project docs/cellpack ...`.
 Update frontend dependencies in this directory and commit `package-lock.json`.
 The guide programs have their own `examples/Cargo.lock`.
+After changing their `cellpack` dependency, update that lockfile and run the
+programs against the registry package. Website builds also copy their Rust
+sources to `/downloads/rust/`, so readers can run them in ordinary Cargo
+applications without a CellPack checkout.
 Rebuild and validate after dependency or toolchain changes.

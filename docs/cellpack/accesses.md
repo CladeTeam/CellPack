@@ -63,8 +63,11 @@ For `[3, 8, 0, 5]`, schema 0 receives cells `[3, 0]` and schema 1 receives
 <<< @/examples/accesses.rs
 :::
 
+In the application from [installation](installation.md), save
+[accesses.rs](/downloads/rust/accesses.rs) as `src/main.rs`, then run:
+
 ```sh
-cargo run --locked --manifest-path docs/cellpack/examples/Cargo.toml --bin accesses
+cargo run
 ```
 
 The example checks that a separately requested shuffle interval equals the same

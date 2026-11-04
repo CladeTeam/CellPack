@@ -28,11 +28,12 @@ It forces dense delivery, so only a dense callback is needed.
 <<< @/examples/process.rs
 :::
 
-Run with the shared fixture from [storage](storage.md):
+In the application from [installation](installation.md), save
+[process.rs](/downloads/rust/process.rs) as `src/main.rs` and
+[common.rs](/downloads/rust/common.rs) as `src/common.rs`, then run:
 
 ```sh
-cargo run --locked --manifest-path docs/cellpack/examples/Cargo.toml \
-  --bin process -- tmp/cellpack-guide/process
+cargo run -- output/process
 ```
 
 Expected sums are `[3.0, 7.0, 11.0, 15.0]`. The callback writes bytes without

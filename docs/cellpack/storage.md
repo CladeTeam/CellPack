@@ -79,12 +79,13 @@ uses two rows per chunk so the row request exercises multiple chunks.
 <<< @/examples/common.rs
 :::
 
-Run from the repository root on a suitable build worker. Use a disposable output
+In the application from [installation](installation.md), save
+[storage.rs](/downloads/rust/storage.rs) as `src/main.rs` and
+[common.rs](/downloads/rust/common.rs) as `src/common.rs`. Use a disposable output
 directory: the example recreates `matrix.cpk` and `counts.cpk` there.
 
 ```sh
-cargo run --locked --manifest-path docs/cellpack/examples/Cargo.toml \
-  --bin storage -- tmp/cellpack-guide/storage
+cargo run -- output/storage
 ```
 
 ## Capacity and actual nonzero count

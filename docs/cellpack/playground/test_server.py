@@ -85,7 +85,7 @@ class PlaygroundTests(unittest.IsolatedAsyncioTestCase):
             local = await request('textDocument/definition', {'textDocument': {'uri': uri}, 'position': position(code.index('values.iter') + 2)})
             self.assertTrue(local)
             self.assertTrue(all(location.get('uri', location.get('targetUri')) == uri for location in local))
-            await request('cellpack/readFile', {'uri': 'file:///library/crates/cellpack/src/lib.rs'}, error=True)
+            await request('cellpack/readFile', {'uri': 'file:///vendor/cellpack/src/lib.rs'}, error=True)
             await ws.send_json({'jsonrpc': '2.0', 'method': 'textDocument/didChange', 'params': {'textDocument': {'uri': uri, 'version': 2}, 'contentChanges': [{'text': 'fn main() {}'}]}})
             closed = await ws.receive(timeout=10)
             self.assertEqual(closed.type, WSMsgType.CLOSE)

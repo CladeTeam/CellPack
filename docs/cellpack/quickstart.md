@@ -9,11 +9,13 @@ buffer, and inspect its CSR row offsets and column indices:
 
 <<< @/examples/quickstart.rs
 
-From the repository root:
+Follow [installation](installation.md#run-a-first-example) to create a Rust
+application with the crates.io dependency. Save the
+[complete source](/downloads/rust/quickstart.rs) as `src/main.rs`, then run from
+your application's directory:
 
 ```sh
-cargo run --locked --manifest-path docs/cellpack/examples/Cargo.toml \
-  --bin quickstart -- tmp/cellpack-guide/quickstart
+cargo run -- output/quickstart
 ```
 
 Expected output:
