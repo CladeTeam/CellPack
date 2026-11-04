@@ -47,7 +47,7 @@ onBeforeUnmount(() => observer?.disconnect());
         </p>
         <div class="home-actions">
           <a class="home-button primary" :href="link('/quickstart.html')">Get started <span aria-hidden="true">→</span></a>
-          <a class="home-button" :href="link('/overview.html')">Documentation</a>
+          <a class="home-button" :href="link('/python/docs/')">Documentation</a>
           <a class="home-link" :href="link('/report.html')">Technical report ↗</a>
         </div>
         <dl class="home-stats">
@@ -57,8 +57,8 @@ onBeforeUnmount(() => observer?.disconnect());
         </dl>
       </div>
       <HeroScene />
-      <a class="home-scroll" href="#story" aria-label="Scroll to the story"
-        ><span>The story</span><i aria-hidden="true" /></a>
+      <a class="home-scroll" href="#story" aria-label="Explore how we do it"
+        ><span>How we do it</span><i aria-hidden="true" /></a>
     </header>
 
     <StoryProgress :chapters="chapters" :visible="visible" :active-chapter="activeChapter" :active-scene="activeScene" :progress="progress" :pending="pending" @navigate="jump" />
