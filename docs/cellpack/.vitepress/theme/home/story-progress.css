@@ -1,0 +1,199 @@
+.cp-story-home { --story-nav-space: 64px; }
+#story {
+  padding-left: var(--story-nav-space);
+  /* Animated chapter text must not become a browser scroll anchor. */
+  overflow-anchor: none;
+  transition: opacity 220ms ease;
+  scroll-margin-top: var(--vp-nav-height, 64px);
+}
+.cp-story-home[data-story-transition="leaving"] #story,
+.cp-story-home[data-story-transition="positioning"] #story { opacity: 0; transition-duration: 140ms; }
+.cp-story-home[data-story-transition="positioning"] .scene-beat,
+.cp-story-home[data-story-transition="positioning"] .chapter-text > * { transition: none; }
+.story-icon { width: 22px; height: 22px; flex-shrink: 0; }
+.story-progress {
+  position: fixed;
+  z-index: 25;
+  left: max(6px, env(safe-area-inset-left));
+  top: calc(50% + var(--vp-nav-height, 64px) / 2);
+  transform: translateY(-50%);
+  color: var(--vp-c-text-2);
+}
+.story-progress-spine {
+  width: 50px;
+  padding: 6px 2px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 14px;
+  background: var(--vp-c-bg);
+  box-shadow: 0 6px 28px color-mix(in srgb, var(--vp-c-text-1) 4%, transparent);
+}
+.story-progress-caption { display: none; }
+.story-progress ol { list-style: none; margin: 0; padding: 0; }
+.story-progress-stops > li { position: relative; }
+.story-progress-stops a,
+.story-progress-home,
+.story-progress-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  min-height: 44px;
+  border-radius: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: background 180ms, color 180ms;
+}
+.story-progress-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  transition: transform 180ms, background 180ms, color 180ms;
+}
+.story-progress-stops a:hover,
+.story-progress-home:hover,
+.story-progress-toggle:hover { background: var(--vp-c-bg-soft); color: var(--cp-teal); }
+.story-progress-home { position: relative; margin-bottom: 8px; }
+.story-progress-stops .is-current > a { background: var(--cp-teal-soft); color: var(--cp-teal); }
+.story-progress-stops .is-complete .story-progress-icon { color: var(--cp-teal); }
+.story-progress-stops a:active .story-progress-icon { transform: scale(0.9); }
+.story-progress-home:active .story-progress-icon { transform: scale(0.9); }
+.story-progress-label { display: none; }
+.story-progress a:focus-visible,
+.story-progress button:focus-visible { outline: 2px solid var(--cp-teal); outline-offset: 2px; }
+.story-progress-track {
+  display: block;
+  width: 2px;
+  height: 14px;
+  margin: 3px 21px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--vp-c-divider);
+}
+.story-progress-track i {
+  display: block;
+  height: 100%;
+  background: var(--cp-teal);
+  transform-origin: top;
+  transition: transform 160ms linear;
+}
+.story-progress-tooltip {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 4px;
+  width: max-content;
+  max-width: min(260px, calc(100vw - 90px));
+  padding: 9px 13px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg-elv);
+  color: var(--vp-c-text-1);
+  font-size: 13px;
+  line-height: 1.5;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 160ms, transform 160ms;
+}
+.story-progress-stops a:hover .story-progress-tooltip,
+.story-progress-stops a:focus-visible .story-progress-tooltip,
+.story-progress-home:hover .story-progress-tooltip,
+.story-progress-home:focus-visible .story-progress-tooltip { opacity: 1; transform: none; }
+.story-progress-toggle { margin-top: 8px; }
+.story-progress-toggle > span { display: none; }
+.story-progress-toggle svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.story-contents-panel {
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 10px);
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  width: min(304px, calc(100vw - 76px));
+  max-height: calc(100svh - var(--vp-nav-height, 64px) - 40px);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 14px;
+  background: var(--vp-c-bg-elv);
+  box-shadow: var(--cp-shadow);
+  overflow: hidden;
+}
+.story-contents-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--vp-c-divider);
+  font: 10px/1.6 var(--vp-font-family-mono);
+  letter-spacing: 0.6px;
+}
+.story-contents-heading > :last-child { color: var(--vp-c-text-2); letter-spacing: 0; }
+.story-progress .story-contents-list { padding: 8px; overflow-y: auto; overscroll-behavior: contain; }
+.story-contents-list > li + li { margin-top: 10px; }
+.story-contents-chapter,
+.story-contents-scene {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  min-height: 44px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  transition: background 160ms, color 160ms;
+}
+.story-contents-chapter { font-size: 13px; font-weight: 600; color: var(--vp-c-text-1); }
+.story-contents-chapter .story-icon { width: 18px; height: 18px; color: var(--cp-teal); }
+.story-contents-scene { margin-left: 18px; font-size: 12px; line-height: 1.5; }
+.story-contents-scene > span:nth-child(2) { flex: 1; }
+.story-contents-dot { width: 5px; height: 5px; flex-shrink: 0; border-radius: 50%; background: var(--vp-c-border); }
+.story-contents-scene.is-current .story-contents-dot { background: var(--cp-teal); box-shadow: 0 0 0 3px var(--cp-teal-soft); }
+.story-contents-list a:hover,
+.story-contents-list a.is-current { background: var(--cp-teal-soft); color: var(--cp-teal); }
+.story-contents-panel > p { margin: 0; padding: 12px 16px; border-top: 1px solid var(--vp-c-divider); font-size: 11px; }
+.story-contents-enter-active,
+.story-contents-leave-active { transition: opacity 180ms, transform 220ms cubic-bezier(0.2, 0.7, 0.2, 1); }
+.story-contents-enter-from,
+.story-contents-leave-to { opacity: 0; transform: translate(-8px, -50%); }
+.story-progress .is-pending .story-progress-icon,
+.story-contents-scene.is-pending .story-contents-dot { animation: story-stop-pulse 450ms ease-out; }
+@keyframes story-stop-pulse { 50% { box-shadow: 0 0 0 4px var(--cp-teal-soft); } }
+.story-navigation-status { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (min-width: 1280px) {
+  .cp-story-home { --story-nav-space: 232px; }
+  .story-progress { left: max(12px, env(safe-area-inset-left)); }
+  .story-progress-spine { width: 208px; padding: 12px 8px 6px; }
+  .story-progress-caption { display: block; margin: 0 10px 12px; font: 10px/1.5 var(--vp-font-family-mono); letter-spacing: 1px; }
+  .story-progress-stops a,
+  .story-progress-home { width: 100%; justify-content: flex-start; gap: 8px; min-height: 56px; padding: 4px; }
+  .story-progress-label { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .story-progress-label b { font-size: 13px; font-weight: 600; line-height: 1.35; }
+  .story-progress-label > span { font-size: 11px; line-height: 1.45; color: var(--vp-c-text-2); }
+  .story-progress-track { margin-left: 21px; height: 12px; }
+  .story-progress-tooltip { display: none; }
+  .story-progress-toggle { width: 100%; justify-content: flex-start; gap: 14px; padding: 0 12px; }
+  .story-progress-toggle > span { display: inline; font-size: 12px; }
+}
+@media (max-width: 539px) {
+  .cp-story-home { --story-nav-space: 56px; }
+  .story-progress { left: max(2px, env(safe-area-inset-left)); }
+  .story-progress-spine { width: 48px; padding-inline: 1px; }
+  .story-contents-panel { left: calc(100% + 6px); width: min(304px, calc(100vw - 64px)); }
+}
+@media (max-height: 620px) {
+  .story-progress-spine { max-height: calc(100svh - var(--vp-nav-height, 64px) - 12px); overflow-y: auto; scrollbar-width: none; padding-top: 4px; }
+  .story-progress-caption { display: none; }
+  .story-progress-track { height: 4px; }
+  .story-progress-tooltip { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #story, .story-progress *, .story-progress *::before { transition: none !important; animation: none !important; }
+}

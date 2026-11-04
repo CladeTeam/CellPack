@@ -1,0 +1,11 @@
+@media (prefers-reduced-motion: no-preference) {
+  .VPNavBarTitle .logo {
+    transform-origin: center;
+    transition: transform 180ms ease;
+  }
+
+  .VPNavBarTitle:hover .logo,
+  .VPNavBarTitle:focus-visible .logo {
+    transform: translateY(-1px) rotate(-6deg);
+  }
+}

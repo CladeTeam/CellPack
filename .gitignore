@@ -1,0 +1,63 @@
+# Python bytecode and native extensions (maturin)
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.pyd
+*.dylib
+
+# Python packaging
+/build/
+/dist/
+/wheels/
+*.egg
+*.egg-info/
+.eggs/
+*.whl
+
+# Python environments and tool caches
+.venv*/
+venv/
+.env
+.env.*
+!.env.example
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pytype/
+.hypothesis/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.ipynb_checkpoints/
+
+# Rust build output. Unanchored so each crate's target/ is covered.
+target/
+*.rs.bk
+*.pdb
+
+# Local scratch and profiling output
+/tmp/
+*.bak
+*~
+*.orig
+*.rej
+*.trace.json
+perf.data
+perf.data.old
+flamegraph.svg
+
+# OS, editors, and agent state
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+.claude/
+.codex/
+.cursor/
+.grok/

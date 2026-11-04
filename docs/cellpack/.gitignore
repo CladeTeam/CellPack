@@ -1,0 +1,14 @@
+/_build/
+/_generated/
+/_catalog/
+/generated-*.md
+/node_modules/
+/public/downloads/
+/public/logo.svg
+/public/cellpack-animation.svg
+/public/cellpack-animation-first-frame.svg
+/public/pdfjs/
+/public/api/
+/.vitepress/.temp/
+/public/cellpack-logo-animation.svg
+/public/cellpack-logo-poster.svg

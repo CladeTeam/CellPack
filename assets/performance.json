@@ -1,0 +1,141 @@
+{
+  "description": "Frozen experimental results, not measurements of the current implementation. Newly rendered for README; no report figures are reused.",
+  "regenerate": "uv run scripts/plot_readme.py",
+  "sources": {
+    "compression_comparison_pooled.csv": {
+      "repository_path": "docs/cellpack/public/research/home/compression_comparison_pooled.csv",
+      "source": "CellPack-lab/technical-report/results/compression_comparison_pooled.csv",
+      "sha256": "13dc8c0bf3b351890679db525b56764fdc53466e81a15612f7ccc93aba1d42cd"
+    },
+    "loader_methods.csv": {
+      "repository_path": "docs/cellpack/public/research/home/loader_methods.csv",
+      "source": "CellPack-lab/technical-report/results/loader_methods.csv",
+      "sha256": "07db1a147709c6cee1a552ec0d3bf55099cdfb3ebe85dc759e22a1f43ae92acf"
+    },
+    "cellpack_paper_values.json": {
+      "repository_path": "docs/cellpack/public/research/home/cellpack_paper_values.json",
+      "source": "CellPack-lab/technical-report/results/cellpack_paper_values.json",
+      "sha256": "285e11de6b4c83928a7ebf6e8d83d40d2405af9b67106115582da13adba0b93d"
+    }
+  },
+  "report": {
+    "repository_path": "docs/cellpack/public/reports/cellpack-technical-report.pdf",
+    "title": "CellPack: Efficient Data Loading for Billion-Cell Training",
+    "source": "CellPack-lab/technical-report/main.pdf",
+    "compiled": "2026-10-31",
+    "sha256": "e6a3899adf93c8553f7e114a4ce208d2345ad0a9a494f9d5d4eb99dcb40f24f7"
+  },
+  "compression": {
+    "protocol": "Technical report section 5.3, Table 3. Arithmetic mean of compression ratios with equal weight per raw or normalized matrix block; not total bytes divided by total compressed bytes. CellPack: 432 raw + 302 normalized blocks; general codecs: 428 raw + 296 normalized blocks, different seeded prefixes. Selected configurations from the published summary, not paired-input comparisons. CellPack uses 4096-cell chunks. No decode-speed claim.",
+    "selection": "CellPack plus LZ4, default and maximum-level Zstd, PCodec and XZ to cover fast, default and high-compression alternatives.",
+    "unit": "uncompressed bytes / compressed bytes",
+    "rows": [
+      {
+        "method": "LZ4",
+        "config": "lz4/default@imagecodecs",
+        "blocks": 724,
+        "ratio": 1.6930779183871798
+      },
+      {
+        "method": "Zstd (3, default)",
+        "config": "zstd/level-3@numcodecs",
+        "blocks": 724,
+        "ratio": 3.000558161624884
+      },
+      {
+        "method": "Zstd (22)",
+        "config": "zstd/level-22@numcodecs",
+        "blocks": 724,
+        "ratio": 4.476722029175023
+      },
+      {
+        "method": "PCodec (12)",
+        "config": "pcodec/level-12@numcodecs",
+        "blocks": 724,
+        "ratio": 4.824105575123087
+      },
+      {
+        "method": "XZ (9)",
+        "config": "xz/preset-9@numcodecs",
+        "blocks": 724,
+        "ratio": 4.884794353970329
+      },
+      {
+        "method": "CellPack",
+        "config": "cellpack/chunk-4096",
+        "blocks": 734,
+        "ratio": 5.893219444577845
+      }
+    ]
+  },
+  "loading": {
+    "protocol": "Technical report sections 5.1-5.2, Figure 5. One NVMe SSD, 16 workers, global random order. Baselines: best variant per method at 20 GB cache, means over three seeds, 60 s post-warm-up windows, sample output. CellPack: 0 data cache, direct I/O, report-selected value for a single 5 s check after a warm-up epoch, no variance estimate; 9967232 cells from 430 datasets, fixed 2048-gene float32 output (8192 bytes/cell). These are different output paths and timing protocols, not an identical-output speedup comparison. CellPack paper values replace interference-affected exports; see the note in cellpack_paper_values.json.",
+    "selection": "All global random-order baseline methods from loader_methods.csv. Excludes starred methods with native sampling; excludes RAID-0 and 32-worker configurations.",
+    "unit": "cells/s",
+    "rows": [
+      {
+        "method": "AnnLoader",
+        "cells_per_s": 1163,
+        "variant": "annloader (sparse converter)",
+        "cache_bytes": 20000000000,
+        "source": "loader_methods.csv:nvme"
+      },
+      {
+        "method": "BioNeMo",
+        "cells_per_s": 32771,
+        "variant": "scdl (readahead off)",
+        "cache_bytes": 20000000000,
+        "source": "loader_methods.csv:nvme"
+      },
+      {
+        "method": "HF Datasets",
+        "cells_per_s": 27411,
+        "variant": "hfdatasets (readahead off)",
+        "cache_bytes": 20000000000,
+        "source": "loader_methods.csv:nvme"
+      },
+      {
+        "method": "Lance",
+        "cells_per_s": 79135,
+        "variant": "lance",
+        "cache_bytes": 20000000000,
+        "source": "loader_methods.csv:nvme"
+      },
+      {
+        "method": "MappedCollection",
+        "cells_per_s": 11763,
+        "variant": "mappedcollection",
+        "cache_bytes": 20000000000,
+        "source": "loader_methods.csv:nvme"
+      },
+      {
+        "method": "Parquet",
+        "cells_per_s": 2806,
+        "variant": "parquet (tuned rg128)",
+        "cache_bytes": 20000000000,
+        "source": "loader_methods.csv:nvme"
+      },
+      {
+        "method": "Zarr",
+        "cells_per_s": 3670,
+        "variant": "zarr",
+        "cache_bytes": 20000000000,
+        "source": "loader_methods.csv:nvme"
+      },
+      {
+        "method": "memmap",
+        "cells_per_s": 26165,
+        "variant": "memmap (readahead off)",
+        "cache_bytes": 20000000000,
+        "source": "loader_methods.csv:nvme"
+      },
+      {
+        "method": "CellPack",
+        "cells_per_s": 1165000,
+        "cache_bytes": 0,
+        "source": "cellpack_paper_values.json:fig5.nvme_16",
+        "value_kind": "author-selected report value, not an unmodified measured export"
+      }
+    ]
+  }
+}

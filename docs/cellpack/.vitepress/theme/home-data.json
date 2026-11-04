@@ -1,0 +1,202 @@
+{
+  "compression": [
+    {
+      "name": "Snappy",
+      "ratio": 1.602169131807171,
+      "family": "snappy"
+    },
+    {
+      "name": "LZF",
+      "ratio": 1.6787922804357198,
+      "family": "lzf"
+    },
+    {
+      "name": "LZ4",
+      "ratio": 1.6930779183871798,
+      "family": "lz4"
+    },
+    {
+      "name": "LZ4HC (12)",
+      "ratio": 2.636104819327608,
+      "family": "lz4hc"
+    },
+    {
+      "name": "Gzip (6)",
+      "ratio": 2.6520991954375783,
+      "family": "gzip"
+    },
+    {
+      "name": "Zlib (12)",
+      "ratio": 2.8678176566314364,
+      "family": "zlib"
+    },
+    {
+      "name": "Zstd (3, default)",
+      "ratio": 3.000558161624884,
+      "family": "zstd-default"
+    },
+    {
+      "name": "Blosc1 (Zstd-9)",
+      "ratio": 4.044145787102718,
+      "family": "blosc"
+    },
+    {
+      "name": "Zstd (22)",
+      "ratio": 4.476722029175023,
+      "family": "zstd"
+    },
+    {
+      "name": "Brotli (11)",
+      "ratio": 4.6815563301704115,
+      "family": "brotli"
+    },
+    {
+      "name": "Zarr (PCodec-8)",
+      "ratio": 4.791733636393092,
+      "family": "zarr"
+    },
+    {
+      "name": "Bzip2 (9)",
+      "ratio": 4.813357611053208,
+      "family": "bzip2"
+    },
+    {
+      "name": "PCodec (12)",
+      "ratio": 4.824105575123087,
+      "family": "pcodec"
+    },
+    {
+      "name": "XZ (9)",
+      "ratio": 4.884794353970329,
+      "family": "xz"
+    },
+    {
+      "name": "Huffman (byte)",
+      "ratio": 1.4474673283155515,
+      "family": "huffman"
+    },
+    {
+      "name": "Arithmetic (byte)",
+      "ratio": 1.6112405205778446,
+      "family": "arith"
+    },
+    {
+      "name": "rANS (order 0, word)",
+      "ratio": 1.9515362574128077,
+      "family": "rans"
+    },
+    {
+      "name": "CellPack",
+      "ratio": 5.893219444577845,
+      "family": "cellpack"
+    }
+  ],
+  "models": [
+    {
+      "name": "scGPT",
+      "rate": 836.5
+    },
+    {
+      "name": "STATE SE",
+      "rate": 145.5
+    },
+    {
+      "name": "STATE ST",
+      "rate": 227648.7
+    },
+    {
+      "name": "UCE",
+      "rate": 356
+    },
+    {
+      "name": "GEARS",
+      "rate": 3339
+    },
+    {
+      "name": "scVI",
+      "rate": 262702.2
+    },
+    {
+      "name": "CPA (Tahoe)",
+      "rate": 408954.3
+    },
+    {
+      "name": "CPA (Replogle)",
+      "rate": 291966.6
+    },
+    {
+      "name": "CellOT",
+      "rate": 573577.6
+    },
+    {
+      "name": "CellFlow",
+      "rate": 423579.5
+    },
+    {
+      "name": "scDiffusion",
+      "rate": 152240.2
+    }
+  ],
+  "loaders": [
+    {
+      "name": "AnnLoader",
+      "rate": 1163,
+      "block": false
+    },
+    {
+      "name": "BioNeMo",
+      "rate": 32771,
+      "block": false
+    },
+    {
+      "name": "HF Datasets",
+      "rate": 27411,
+      "block": false
+    },
+    {
+      "name": "Lance",
+      "rate": 79135,
+      "block": false
+    },
+    {
+      "name": "MappedCollection",
+      "rate": 11763,
+      "block": false
+    },
+    {
+      "name": "Parquet",
+      "rate": 2806,
+      "block": false
+    },
+    {
+      "name": "TileDB*",
+      "rate": 4795,
+      "block": true
+    },
+    {
+      "name": "Zarr",
+      "rate": 3670,
+      "block": false
+    },
+    {
+      "name": "annbatch*",
+      "rate": 68190,
+      "block": true
+    },
+    {
+      "name": "cellarium*",
+      "rate": 50073,
+      "block": true
+    },
+    {
+      "name": "memmap",
+      "rate": 26165,
+      "block": false
+    },
+    {
+      "name": "scDataset*",
+      "rate": 38859,
+      "block": true
+    }
+  ]
+}

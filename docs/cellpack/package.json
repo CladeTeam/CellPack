@@ -1,0 +1,28 @@
+{
+  "name": "cellpack-docs",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prebuild": "node .vitepress/prepare-assets.mjs",
+    "build": "vitepress build .",
+    "deploy": "node .vitepress/publish.mjs",
+    "predev": "node .vitepress/prepare-assets.mjs",
+    "dev": "vitepress dev . --host 127.0.0.1",
+    "preview": "vitepress preview . --host 127.0.0.1"
+  },
+  "devDependencies": {
+    "@codemirror/commands": "6.11.1",
+    "@codemirror/lang-rust": "6.0.2",
+    "@codemirror/language": "6.13.1",
+    "@codemirror/state": "6.7.6",
+    "@codemirror/view": "6.43.15",
+    "@fontsource-variable/dm-sans": "5.3.0",
+    "@fontsource-variable/space-grotesk": "5.3.0",
+    "@fontsource/ibm-plex-mono": "5.3.0",
+    "@xmldom/xmldom": "0.9.12",
+    "markdown-it-mathjax3": "4.3.2",
+    "pdfjs-dist": "6.4.299",
+    "shiki": "2.5.0",
+    "vitepress": "1.6.4"
+  }
+}

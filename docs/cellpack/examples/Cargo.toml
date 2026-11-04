@@ -1,0 +1,47 @@
+[package]
+name = "cellpack-guide-examples"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.96"
+publish = false
+
+[workspace]
+
+[dependencies]
+cellpack = { path = "../../../crates/cellpack", features = ["serde"] }
+
+[[bin]]
+name = "quickstart"
+path = "quickstart.rs"
+
+[[bin]]
+name = "storage"
+path = "storage.rs"
+
+[[bin]]
+name = "accesses"
+path = "accesses.rs"
+
+[[bin]]
+name = "loading"
+path = "loading.rs"
+
+[[bin]]
+name = "planning"
+path = "planning.rs"
+
+[[bin]]
+name = "process"
+path = "process.rs"
+
+[[bin]]
+name = "codec"
+path = "codec.rs"
+
+[[bin]]
+name = "abi"
+path = "abi.rs"
+
+[[bin]]
+name = "contracts"
+path = "contracts.rs"

@@ -1,0 +1,300 @@
+.landing-hero.story-hero {
+  position: relative;
+  min-height: calc(100svh - var(--vp-nav-height));
+  padding-block: 56px 88px;
+  gap: 40px;
+}
+.landing-hero .hero-copy {
+  min-width: 0;
+}
+.landing-hero h1 {
+  font-size: clamp(44px, 4.8vw, 70px);
+  letter-spacing: -0.055em;
+}
+.landing-hero .hero-deck {
+  font-size: 18px;
+  line-height: 1.8;
+}
+.landing-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 28px;
+}
+.landing-links .cp-button {
+  font-size: 14px;
+  gap: 24px;
+}
+.landing-report {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  font-size: 13px;
+  color: var(--vp-c-text-2);
+}
+.landing-report:hover {
+  color: var(--cp-accent);
+}
+.landing-scroll {
+  position: absolute;
+  left: 0;
+  bottom: 26px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--vp-c-text-2);
+}
+.landing-scroll > span {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 36px;
+  border: 1px solid var(--vp-c-border);
+  border-radius: 18px;
+}
+.storage-intro .story-pair {
+  margin: 0;
+  align-items: center;
+  gap: 56px;
+}
+.storage-walkthrough {
+  width: 100%;
+  max-width: 560px;
+  justify-self: end;
+}
+.storage-intro h2 {
+  font: 500 clamp(32px, 3.4vw, 46px) / 1.15 var(--cp-font-heading);
+  letter-spacing: -1.5px;
+  margin-block: 20px;
+}
+.storage-intro .story-copy > p {
+  font-size: 17px;
+}
+.storage-intro .story-copy > .source-note {
+  font-size: 13px;
+}
+.walk-top {
+  min-height: 52px;
+  font-size: 13px;
+}
+.walk-interaction-hint {
+  font: 11px var(--vp-font-family-base);
+  color: var(--vp-c-text-2);
+  white-space: nowrap;
+}
+.walk-canvas {
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+.walk-canvas:focus-visible {
+  outline: 2px solid var(--cp-teal);
+  outline-offset: -4px;
+}
+.walkthrough[data-state="paused"] .walk-canvas {
+  cursor: pointer;
+}
+.walk-progress {
+  display: flex;
+  gap: 6px;
+  padding: 0 20px 18px;
+}
+.walk-progress > span {
+  flex: 1;
+  height: 3px;
+  background: var(--vp-c-divider);
+  overflow: hidden;
+}
+.walk-progress i {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--cp-teal);
+  transform-origin: left;
+}
+.walkthrough figcaption {
+  min-height: 72px;
+  font-size: 14px;
+}
+.storage-walkthrough .walk-canvas {
+  min-height: 0;
+  padding: 16px 18px 10px;
+}
+.walk-extra-controls {
+  padding: 8px 18px 0;
+}
+.codec-options {
+  display: flex;
+  gap: 8px;
+}
+.codec-options button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  gap: 9px;
+  min-height: 38px;
+  padding: 6px 9px;
+  border: 1px solid var(--vp-c-border);
+  border-radius: 4px;
+  font-size: 12px;
+}
+.codec-options button[aria-pressed="true"] {
+  border-color: var(--cp-teal);
+  background: var(--cp-teal-soft);
+}
+.codec-options small {
+  color: var(--vp-c-text-2);
+  font: 11px var(--vp-font-family-mono);
+}
+.cp-tensor-conveyor {
+  width: 122px;
+  top: 18%;
+}
+.cp-tensor-window {
+  height: 218px;
+}
+.cp-tensor {
+  padding-bottom: 0;
+}
+.cp-tensor-conveyor > .cp-micro {
+  white-space: nowrap;
+  font-size: 10px;
+  letter-spacing: 0.6px;
+  margin-top: 8px;
+}
+.cp-tensor-shape {
+  display: block;
+  text-align: center;
+  margin-top: 5px;
+  font: 10px var(--vp-font-family-mono);
+  color: var(--vp-c-text-2);
+}
+.cp-hero-scene:not(.in-view) .cp-tensor-belt {
+  animation-play-state: paused;
+}
+@media (max-width: 1100px) {
+  .landing-hero.story-hero {
+    gap: 28px;
+  }
+  .landing-links .cp-button {
+    gap: 14px;
+    padding-inline: 14px;
+  }
+  .cp-tensor-conveyor {
+    width: 100px;
+    top: 17%;
+  }
+  .cp-tensor-window {
+    height: 190px;
+  }
+}
+@media (max-width: 900px) {
+  .landing-hero.story-hero {
+    grid-template-columns: 1fr;
+    padding-block: 32px 64px;
+    gap: 24px;
+  }
+  .landing-hero .cp-hero-scene {
+    width: min(100%, 620px);
+    justify-self: center;
+  }
+  .landing-hero .hero-copy {
+    max-width: none;
+  }
+  .storage-intro .story-pair {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  .storage-walkthrough {
+    justify-self: center;
+  }
+}
+@media (min-width: 541px) and (max-width: 767px) {
+  .cp-tensor-window {
+    height: 158px;
+  }
+}
+@media (max-width: 540px) {
+  .landing-hero.story-hero {
+    padding-block: 24px 64px;
+    gap: 22px;
+  }
+  .landing-hero h1 {
+    font-size: 42px;
+    margin-block: 16px;
+  }
+  .landing-hero .story-kicker {
+    font-size: 11px;
+  }
+  .landing-hero .hero-deck {
+    font-size: 16px;
+    line-height: 1.7;
+  }
+  .landing-hero .cp-hero-scene {
+    height: 300px;
+  }
+  .landing-links {
+    margin-top: 20px;
+    gap: 10px;
+  }
+  .landing-links .cp-button {
+    min-height: 44px;
+    font-size: 13px;
+    padding: 9px 12px;
+    gap: 14px;
+  }
+  .landing-report {
+    font-size: 12px;
+  }
+  .landing-scroll {
+    bottom: 18px;
+  }
+  .cp-tensor-conveyor {
+    width: 94px;
+    right: 3%;
+    top: 17%;
+  }
+  .cp-tensor-window {
+    height: 128px;
+  }
+  .cp-tensor-conveyor > .cp-micro {
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+  .cp-tensor-shape {
+    font-size: 9px;
+  }
+  .cp-hero-logo {
+    left: 22%;
+    width: 52%;
+  }
+  .cp-matrix-block {
+    width: 72px;
+    left: 4%;
+  }
+  .storage-intro .story-copy > p {
+    font-size: 16px;
+  }
+  .walk-top {
+    padding-inline: 14px;
+    font-size: 12px;
+  }
+  .walk-interaction-hint {
+    font-size: 10px;
+  }
+  .codec-options button {
+    flex-wrap: wrap;
+    gap: 4px;
+    font-size: 12px;
+  }
+  .walk-canvas {
+    min-height: 260px;
+  }
+  .storage-walkthrough .walk-canvas {
+    padding-inline: 12px;
+  }
+}
